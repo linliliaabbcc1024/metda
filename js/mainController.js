@@ -1267,7 +1267,7 @@ angular
 "one_way_boxplot_selected":"classic",
 "projects":[]
           };
-          var db_user = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+          var db_user = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
           db_user.put(new_user).then(function(){
             localStorage.setItem("user",user_id)
 
@@ -2531,7 +2531,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
         $scope.view_project = function(project){
           focused_project = project
-          var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+          var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
           db.get(project.id).then(function(project_doc){
             $("#view_project_tree").jstree('destroy');
             console.log(project_doc.tree_structure)
