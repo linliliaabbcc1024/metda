@@ -1,0 +1,178 @@
+<div ng-controller = "loess_normalizationController as ctrl">
+		  <button onclick="loadResult()">Load Result</button>
+		  <button ng-click="ctrl.initScope()">Go</button>
+  <div id="result">no results</div>
+
+<h1>LOESS Normalization</h1>
+<p>Use quality control (QC) samples to fit a LOESS (Locally-Weighted Regression) curve to summarize the systematic error within- and between- batches in each compound. And use the LOESS curve to correct the systematic error in the analytical samples.</p>
+<img src="img/loess_info.PNG" alt="LOESS Normalization Illustration" />
+<h3>Basic Requirements</h3>
+<ul>
+  <li>You must have quality control (QC) samples in your dataset.</li>
+  <li>You must have injection order/injection time in your dataset.</li>
+
+
+  <li>The number of QC samples for each batch should not be less than seven. Otherwise, we suggest using <a href="">Batch-Ratio Normalization</a>.</li>
+</ul>
+<h3>Assumptions</h3>
+<ul>
+  <li>The technical variation of QC samples and analytical samples is homologous.</li>
+</ul>
+
+<div class="warning">
+  <p><strong>Note:</strong> Generally speaking, it is recommended to use the pooled QC samples to train the LOESS curve.</p>
+</div>
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Parameters & Settings.</span>
+      <span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <div layout="row">
+      <md-button class="md-raised md-hue-1" ng-click="mainctrl.toggleLeft()">{{ctrl.select_data_button_text}}</md-button> <p>OR</p>  <button id='uploadFiles' type="file" ngf-select="ctrl.uploadFiles($file, $invalidFiles)" accept=".xlsx, .csv" ngf-max-size="5MB" class="md-button md-raised md-hue-1">{{ctrl.upload_data_button_text}}</button>  <div style="font:smaller"><p style="margin-bottom:0">{{ctrl.f.name}} <span style="color:red">{{ctrl.errFile.name}} {{ctrl.errFile.$error}} {{ctrl.errFile.$errorParam}}</span></p>
+      <md-progress-linear md-mode="determinate" value="{{ctrl.f.progress}}"></md-progress-linear>
+
+    </div><br />
+      <span style="color:red">{{ctrl.errorMsg}}</span>
+      <p>&nbsp;&nbsp;(download&nbsp;<a href="">example data</a>)</p>
+    </div>
+    <div>
+      <table id='preview_datatable' class="display"></table>
+    </div>
+    <md-divider></md-divider>
+
+    <div layout="row">
+      <md-input-container class="md-block" flex='30'>
+        <label>Sample Type</label>
+        <md-select name="groups" ng-model="ctrl.parameters.type" required="">
+          <md-option ng-repeat="groups_option in ctrl.groups_options" value="{{groups_option}}">{{groups_option}}</md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container class="md-block" flex='30'>
+        <label>Quality Control Samples</label>
+        <md-select name="qc" ng-model="ctrl.parameters.qc" required="">
+          <md-option ng-repeat="qc_option in ctrl.parameters.qc_options" value="{{qc_option}}" >{{qc_option}}</md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <div layout="row">
+      <md-input-container class="md-block" flex='30'>
+        <label>Injection Order/Time</label>
+        <md-select name="time" ng-model="ctrl.parameters.time" required="">
+          <md-option ng-repeat="groups_option in ctrl.groups_options" value="{{groups_option}}">{{groups_option}}</md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <div layout="row">
+
+      <md-input-container class="md-block" flex='30'>
+        <md-checkbox name="batch_check" ng-model="ctrl.parameters.batch_check" required="" class="md-primary">
+          Multiple-Batches (Batch-wise LOESS)
+        </md-checkbox>
+      </md-input-container>
+
+      <md-input-container class="md-block" flex='30' ng-show="ctrl.parameters.batch_check">
+        <label>Batches</label>
+        <md-select name="batch" ng-model="ctrl.parameters.batch" required="">
+          <md-option ng-repeat="groups_option in ctrl.groups_options" value="{{groups_option}}">{{groups_option}}</md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+
+    <div layout="row">
+
+      <md-input-container class="md-block" flex='30'>
+        <md-checkbox name="cross_validated_span" ng-model="ctrl.parameters.cross_validated_span" required="" class="md-primary">
+          5-fold Cross-Validation on Choosing Span
+        </md-checkbox>
+      </md-input-container>
+
+        <md-input-container flex="30" ng-hide="ctrl.parameters.cross_validated_span">
+          <label>Manual Span</label>
+          <input required="" name="Span" ng-model="ctrl.parameters.span" type="number" step="0.05" min="0.05" max = "2">
+        </md-input-container>
+
+
+    </div>
+
+
+    <md-button class="md-raised md-primary" ng-click="ctrl.submit()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.submit_button_text}}</md-button>
+
+
+  </md-card-content>
+</md-card>
+
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Analysis Results.</span>
+      <span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <h3>Result:</h3>
+    <div ng-bind-html="ctrl.report"></div>
+    <p>The result is diaplayed in the following table. You could either download the table by clicking "DOWNLOAD RESULT" button or save the result to the database for later use by clicking "SAVE RESULT TO DATABASE" button.</p>
+
+    <div>
+       <md-progress-linear md-mode="determinate" value="{{ctrl.progress}}"></md-progress-linear>
+       {{ctrl.progress}}%
+
+
+
+      <table id='result_datatable' class="display"></table>
+      <div id='scatter_plot'></div>
+    </div>
+
+    <div layout="row">
+      <div flex="50">
+        <div id="before_pca"></div>
+      </div>
+      <div flex="50">
+        <div id="after_pca"></div>
+      </div>
+    </div>
+
+
+
+<md-button class="md-raised md-warn" ng-click="ctrl.download()" ng-disabled='ctrl.submit_button_text == "Calculating" || ctrl.download_button_text == "DOWNLOADING"'>{{ctrl.download_button_text}}</md-button>
+<md-button class="md-raised" md-colors="{background:'teal'}" ng-click="ctrl.save_result()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.save_button_text}}</md-button>
+
+
+<p style="color:white">.</p>
+  </md-card-content>
+</md-card>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+---
+title: "PCA and Metabolomics and Metabox"
+description: |
+  High-dimensional data tables encountered in metabolomics can be difficult to analyse and interpret. Variable extraction and dimension reduction methods are fequently used to reduce the "width" (number of variables) of the dataset (retaining as much as informaion) before statistical analysis. Principal componenet analysis (PCA) is a popular (maybe the most popular) method of reducing the dimension of dataset in metabolomics.
+  
+author:
+  - name: Sili Fan 
+    url: http://fiehnlab.ucdavis.edu/component/contact/contact/11-members/14-wcmc/17
+    affiliation: West Coast Metabolomics Center
+    affiliation_url: http://fiehnlab.ucdavis.edu/
+date: "`r Sys.Date()`"
+output: radix::radix_article
+---
+
+
+PCA is an example of a so-called unsupervised technique. This means that the method does not use class label information (i.e. to which group, <em>control</em> or <em>treatment</em>, does each sample in the data table belong). 
+
+
+Dimension reduction is achieved by a linear combination of the data variables followed by mathematical projection to a lower dimension resulting in a small data table. Take our hand as an example. Our hand is a complex three-dimensional object, while the shadow of our hand is a two-dimenional object. The question is in which angle out hand put to make the shadow of our hands most distinguishable, so that people would immediately recognize that the projected object is a hand? Finding the best angle to project the shadow can mathematically translated as <em>finding the best linear combination of the variables</em> so that the combinations of the variables retains most of the variance of the original variables. Our dataset is like the hand, which is in a complex dimension space. Each compound in the data is a variable. Pincipal component analysis can find coefficients for each compound values so that the linear combination (the some of these coefficients times the compound values) of these compounds capture the most variance of the dataset. The linear combination of the variables are called principal components (PCs). These PCs are also orthognal to each other, meaning that these PCs does not share any overlapping information. Usually, people use PCA to project the complex dataset with many variables into a two or three dimensional axis plot.
+
+
+<div style= "float:right;position:absolute;top:1000px; left:20px">
+```{r  preview=TRUE, fig.cap="Iris Flower", fig.align='center'}
+knitr::include_graphics("pca_iris.png",dpi = 150)
+```
+</div>
+
+Usually, the output of the PCA are scree plots, score plots and loading plots. Next, we are showing the result of the PCA using the [iris dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set). We have three types of iris flowers measured by four variables, <em>Sepal</em>'s and <em>Petal</em>'s width and length. Each type has 50 flowers.
+
+<h4>Scree Plot</h4>
+
+Scoree plot shows the percentage of total variance, or information, captured by each PC. 
+
+The captured variances reduce with the order of the PC, and this is why the bar plot is always decreasing. Scree plot is helpful when people determine how many PCs are enough to capture most of the information of the entire dataeset, or when people wants to know how much variance captured by the first two or three PCs. If the first two PCs can capture most of the variance (e.g. 60%), people may not need to visualize the samples with the third PC or so on. People can just draw conclusion based on a X-Y 2-D axis plot. Otherwise, if the first two PCs only capture a small amount of variance in the data (e.g. 30%), it is a good habbits to plot other PCs, e.g. PC1 vs PC3, PC2 vs PC3, etc. Sometimes the outliers do not appear on the first two PCs but on the other PCs. 
+
+```{r  preview=TRUE, fig.cap="Scree Plot", fig.align='center'}
+knitr::include_graphics("pca_scree_plot.png",dpi = 150)
+```
+
+The above 
+
+<h4>Score Plot</h4>
+Score plot represents the relationship between <b>samples</b>.
+
+<ol>
+<li>The closer the points on the score plot, the higher correlated the two samples are, which means the samples have a similar set of metabolites altered.</li>
+<li>If samples are at the same direction from the origin (i.e. <em>(0,0)</em>), these samples are positively correlated. This means that the metabolites profile changes at the same direction on these sample. </li>
+</ol>
+
+The score plots usually examines the 
+
+```{r  preview=TRUE, fig.cap="Score Plot", fig.align='center'}
+knitr::include_graphics("pca_score_plot.png",dpi = 150)
+```
+
+In the above score plots, the colors denotest the species, which is the <em>pumpkin</em> vs. <em>tomatillo</em>, while the shape indicates the treatments. The scores plots showed that there is an obvious distinction between species while the treatment effect <em>MeOH-frz</em> (i.e. circle) is more distinguishable than others. 
+
+
+
+<><>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

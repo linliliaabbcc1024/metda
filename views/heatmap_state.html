@@ -1,0 +1,312 @@
+<div ng-controller = "heatmapController as ctrl">
+
+<!--<h1>Heatmap</h1>
+
+<p>What is Heatmap.</p>
+
+<h3>Heatmap</h3>
+<ul>
+  <li></li>
+</ul>
+<h3>Assumptions</h3>
+<ul>
+  <li>None.</li>
+</ul>
+
+-->
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Parameters & Settings.</span>
+      <!--<span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>-->
+      <span style="color:red">{{ctrl.errorMsg}}</span><p>&nbsp;&nbsp;(download&nbsp;<a href="">example data</a>)</p>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <div layout="row">
+      <div flex='32' class="md-block">
+        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('heatmap');">{{ctrl.select_data_button_text}}</md-button>
+      </div><div flex="2"></div>
+      <div flex='32' class="md-block">
+        <div layout="column" layout-align="center center">
+          <button id='uploadFiles' type="file" ngf-select="ctrl.load_data_from_input_show = false; ctrl.uploadFiles($file, $invalidFiles);" accept=".xlsx, .csv" ngf-max-size="5MB" class="md-button md-raised md-hue-1" ng-disabled="ctrl.upload_data_button_text == 'uploading'">{{ctrl.upload_data_button_text}}</button>
+        </div>
+      </div><div flex='2'></div>
+      <div flex='32' class="md-block">
+        <md-button class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = true">{{ctrl.input_data_button_text}}</md-button>
+      </div>
+    </div>
+    <div ng-show='ctrl.load_data_from_input_show'>
+      <div layout='row'>
+        <div flex='80'>
+          <md-input-container class="md-block">
+            <label>Copy & Paste here</label>
+            <textarea ng-model="ctrl.dataset_input" rows="5" md-select-on-focus=""  md-detect-hidden='' style='max-height:100px;overflow-y: scroll;white-space:pre;' id='dataset_input'></textarea>
+          </md-input-container>
+        </div>
+        <div flex='20'>
+          <button class="md-button md-raised md-hue-1" ng-click='ctrl.upload_data_from_input()' ng-disabled = "ctrl.upload_data_from_input_text === 'uploading' ">{{ctrl.upload_data_from_input_text}}</button>
+        </div>
+
+      </div>
+
+    </div>
+    <div>
+      <table id='preview_datatable' class="display"></table>
+    </div>
+    <md-divider></md-divider>
+    <!--!!!! add parameters here-->
+    <div layout='row'>
+       <md-input-container class="md-block" flex='30'>
+        <label>Data Scaling</label>
+        <md-select ng-model="ctrl.parameters.scale">
+          <md-option ng-repeat = "scale_option in ctrl.scale_options" value="{{scale_option.id}}">{{scale_option.text}}</md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+
+    <md-button class="md-raised md-primary" ng-click="ctrl.submit()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.submit_button_text}}</md-button>
+
+
+  </md-card-content>
+</md-card>
+
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Analysis Results.</span>
+      <span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <h3>Result:</h3>
+
+
+    <div ng-bind-html="ctrl.report"></div>
+    <p>The result is diaplayed in the following table. You could either download the table by clicking "DOWNLOAD RESULT" button or save the result to the database for later use by clicking "SAVE RESULT TO DATABASE" button.</p>
+
+
+    <div layout="row">
+      <div flex="30" style='overflow:auto'>
+        <div ng-bind-html="ctrl.heatmap_report" class='info' style='margin-top:42;margin-right:15'></div>
+        <div layout='column'>
+          <h4>Heatmap parameters</h4>
+        <div layout='row'>
+          <label for="colorscale">Color Scale  </label>
+          <select id="colorscale" name="colorscale" ng-model='ctrl.parameters.colorscale'>
+          	<option value="{{option}}" ng-repeat="option in ctrl.color_scale_options">{{option}}</option>
+          </select>
+        </div>
+        <div layout='row'>
+          <div flex>
+            <label for="height">Height</label>
+            <input type="number" id="height" ng-model="ctrl.parameters.height">
+          </div>
+          <span flex='10'></span>
+          <div flex>
+            <label for="width">Width</label>
+            <input type="number" id="width" ng-model="ctrl.parameters.width">
+          </div>
+        </div>
+        <div layout='row'>
+          <div flex>
+            <label for="top">top</label>
+            <input type="number" id="top" ng-model="ctrl.parameters.top">
+          </div>
+          <div flex>
+            <label for="right">right</label>
+            <input type="number" id="right" ng-model="ctrl.parameters.right">
+          </div>
+          <div flex>
+            <label for="bottom">bottom</label>
+            <input type="number" id="bottom" ng-model="ctrl.parameters.bottom">
+          </div>
+          <div flex>
+            <label for="left">left</label>
+            <input type="number" id="left" ng-model="ctrl.parameters.left">
+          </div>
+        </div>
+        <div layout='row'>
+          <div flex><label for="show_sample_label">Show Sample Label</label>
+            <input type="checkbox" id="show_sample_label" ng-model="ctrl.parameters.show_sample_label">
+          </div>
+          <span flex="10"></span>
+          <div flex><label for="show_compound_label">Show Compound Label</label>
+            <input type="checkbox" id="show_compound_label" ng-model="ctrl.parameters.show_compound_label">
+          </div>
+        </div>
+
+
+        <div layout="column">
+          <md-input-container class="md-block">
+            <label>Sample Order</label>
+            <md-select ng-model="ctrl.parameters.order_sample_by" multiple="">
+              <md-option ng-repeat = "order_sample_by_option in ctrl.order_sample_by_options track by $index" value="{{order_sample_by_option}}">{{order_sample_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <span style='color:blue;font-size:4px' ng-show='(ctrl.parameters.order_sample_by.includes("dendrogram") || ctrl.parameters.order_sample_by.includes("as is")) && ctrl.parameters.order_sample_by.length>1'><em>the <code>as is</code> overwrites the <code>dendrogram</code>, which overwites others.</em></span>
+          <md-input-container ng-hide='(ctrl.parameters.order_sample_by.includes("dendrogram") || ctrl.parameters.order_sample_by.includes("as is"))' class="md-block" ng-repeat="(key, value)  in ctrl.parameters.order_sample_levels" style="margin-bottom:0">
+            <label>{{$index+1}}: {{key}}</label>
+            <input ng-model="ctrl.parameters.order_sample_levels[key]">
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Compound Order</label>
+            <md-select ng-model="ctrl.parameters.order_compound_by" multiple="">
+              <md-option ng-repeat = "order_compound_by_options in ctrl.order_compound_by_options track by $index" value="{{order_compound_by_options}}">{{order_compound_by_options}}</md-option>
+            </md-select>
+          </md-input-container>
+          <span style='color:blue;font-size:4px' ng-show='(ctrl.parameters.order_compound_by.includes("dendrogram") || ctrl.parameters.order_compound_by.includes("as is")) && ctrl.parameters.order_compound_by.length>1'><em>the <code>as is</code> overwrites the <code>dendrogram</code>, which overwites others.</em></span>
+          <md-input-container ng-hide='(ctrl.parameters.order_compound_by.includes("dendrogram") || ctrl.parameters.order_compound_by.includes("as is"))' class="md-block" ng-repeat="(key, value)  in ctrl.parameters.order_compound_levels" style="margin-bottom:0">
+            <label>{{$index+1}}: {{key}}</label>
+            <input ng-model="ctrl.parameters.order_compound_levels[key]">
+          </md-input-container>
+        </div>
+
+
+
+        </div>
+
+
+        <div layout="column">
+          <h4>Sample Annotations</h4>
+          <div ng-show="ctrl.parameters.sample_annotations.length === 0">Click <span>&#8853;</span> to add Sample Annotation</div>
+          <div layout='column' ng-repeat = "sample_annotation in ctrl.parameters.sample_annotations">
+            <div layout="column">
+              <div layout='row'>
+              <md-input-container class="md-block" flex>
+                  <label>sample annotation {{$index+1}}</label>
+                  <md-select ng-model="sample_annotation.column">
+                    <md-option ng-repeat="column_option in ctrl.sample_annotation_options" value="{{column_option}}">
+                      {{column_option}}
+                    </md-option>
+                  </md-select>
+              </md-input-container></div>
+            <div layout='row' layout-wrap="">
+              <div ng-repeat="option in ctrl.sample_level_options[sample_annotation.column]" >
+                <input type='color' ng-model="sample_annotation.colors[$index]" id="{{sample_annotation.column}}{{option}}"/>
+                <label for="{{sample_annotation.column}}{{option}}">{{option}}</label>
+              </div>
+
+            </div>
+            </div>
+          </div>
+
+          <div layout="row">
+            <button aria-label="add new sample annotation" ng-click="ctrl.add_sample_annotation()">
+                <!--<md-icon md-font-set="material-icons" style='color:black'>add</md-icon>--><span>&#8853;</span>
+            </button>
+            <button aria-label="remove last sample annotation" ng-show='ctrl.parameters.sample_annotations.length > 0' ng-click="ctrl.remove_sample_annotation()">
+                <!--<md-icon md-font-set="material-icons" style='color:black'>remove</md-icon>--><span>&#8854;</span>
+            </button>
+          </div>
+
+          <div layout="row" ng-show="ctrl.parameters.sample_annotations.length > 0">
+            <div flex>
+              <label for="sample_annotation_height">Annotation Height</label>
+              <input type='number' ng-model="ctrl.parameters.sample_annotation_height" id="sample_annotation_height"/>
+            </div>
+            <span flex="10"></span>
+            <div flex>
+              <label for="sample_tree_height">Dendrogram Height</label>
+              <input type='number' ng-model="ctrl.parameters.sample_tree_height" id="sample_tree_height"/>
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+        <div layout="column">
+          <h4>Compound Annotations</h4>
+          <div ng-show="ctrl.parameters.compound_annotations.length === 0">Click <span>&#8853;</span> to add Compound Annotation</div>
+          <div layout='column' ng-repeat = "compound_annotation in ctrl.parameters.compound_annotations">
+            <div layout="column">
+              <div layout='row'>
+              <md-input-container class="md-block" flex>
+                  <label>compound annotation {{$index+1}}</label>
+                  <md-select ng-model="compound_annotation.column">
+                    <md-option ng-repeat="column_option in ctrl.compound_annotation_options" value="{{column_option}}">
+                      {{column_option}}
+                    </md-option>
+                  </md-select>
+              </md-input-container></div>
+            <div layout='row' layout-wrap="">
+              <div ng-repeat="option in ctrl.compound_level_options[compound_annotation.column]" >
+                <input type='color' ng-model="compound_annotation.colors[$index]" id="{{compound_annotation.column}}{{option}}"/>
+                <label for="{{compound_annotation.column}}{{option}}">{{option}}</label>
+              </div>
+
+            </div>
+            </div>
+          </div>
+
+          <div layout="row">
+            <button aria-label="add new compound annotation" ng-click="ctrl.add_compound_annotation()">
+                <!--<md-icon md-font-set="material-icons" style='color:black'>add</md-icon>--><span>&#8853;</span>
+            </button>
+            <button aria-label="remove last compound annotation" ng-show='ctrl.parameters.compound_annotations.length > 0' ng-click="ctrl.remove_compound_annotation()">
+                <!--<md-icon md-font-set="material-icons" style='color:black'>remove</md-icon>--><span>&#8854;</span>
+            </button>
+          </div>
+
+          <div layout="row" ng-show="ctrl.parameters.compound_annotations.length > 0">
+            <div flex>
+              <label for="compound_annotation_height">Annotation Height</label>
+              <input type='number' ng-model="ctrl.parameters.compound_annotation_height" id="compound_annotation_height"/>
+            </div>
+            <span flex="10"></span>
+            <div flex>
+              <label for="compound_tree_height">Dendrogram Height</label>
+              <input type='number' ng-model="ctrl.parameters.compound_tree_height" id="compound_tree_height"/>
+            </div>
+          </div>
+
+        </div>
+
+        <p style='color:white'>.</p>
+      </div>
+      <div flex="70" style='overflow:auto'>
+        <div id="heatmap"></div>
+      </div>
+
+    </div>
+
+
+<md-button class="md-raised md-warn" ng-click="ctrl.download()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.download_button_text}}</md-button>
+<md-button class="md-raised" md-colors="{background:'teal'}" ng-click="ctrl.save_result()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.save_button_text}}</md-button>
+<p style="color:white">.</p>
+  </md-card-content>
+</md-card>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

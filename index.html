@@ -1,0 +1,1396 @@
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="css/angular-material.min.css">
+
+
+  <!-- Angular Material DataTable -->
+  <link rel="stylesheet" href="css/animate.css">
+
+  <!-- Data Table -->
+  <link href="css/datatable.css" rel="stylesheet" type="text/css"/>
+
+  <!-- jsTree -->
+  <link rel="stylesheet" href="css/jstree/style.min.css" />
+
+
+  <!-- DataTable -->
+  <link href="css/jquery-dataTables-style.css" rel="stylesheet" type="text/css"/>
+
+  <link href="css/mdColorPicker.min.css" rel="stylesheet" />
+
+
+
+  <!-- Own Functions -->
+  <link href="css/another_font.css" rel="stylesheet" type="text/css"/>
+  <link href="css/myCSS.css" rel="stylesheet" type="text/css"/>
+
+  <link href="css/font.css" rel="stylesheet">
+
+
+   <link rel='stylesheet' href='css/loading-bar.min.css' type='text/css' media='all' />
+
+   <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+<!--Custome CSS-->
+<style>
+#main_tab  [role="tabpanel"] {
+  transition: none;
+}
+
+.warning {
+    background-color: #ffffcc;
+    border-left: 6px solid #ffeb3b;
+    padding: 4px 12px;
+}
+.info {
+    background-color: #e7f3fe;
+    border-left: 6px solid #2196F3;
+    padding: 4px 12px;
+}
+
+
+.jstree-default a {
+    white-space:normal !important; height: auto;
+}
+.jstree-anchor {
+    height: auto !important;
+}
+.jstree-default li > ins {
+    vertical-align:top;
+}
+.jstree-leaf {
+    height: auto;
+}
+.jstree-leaf a{
+    height: auto !important;
+}
+
+#cy {
+  width: 300px;
+  height: 300px;
+  display: block;
+}
+
+
+#main_tab md-tabs-wrapper{
+ position: fixed;
+ background-color:#fff !important;
+ top: 0px;
+ left: 0px;
+ z-index: 1;
+ width: 100%;
+}
+
+
+#main_tab.md-dynamic-height md-tabs-content-wrapper {
+ top: 48px !important;
+ bottom:48px !important;
+}
+
+#loading-bar {
+  pointer-events: all;
+  z-index: 99999999;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  cursor: wait;
+  position: fixed;
+  background-color: rgba(0, 0, 0,0.6);
+}
+
+
+.mainpage section {
+  border-radius: 3px;
+  text-align: center;
+  margin: 5px;
+  position: relative !important;
+}
+
+
+
+.mainpage .label {
+  position: absolute;
+  bottom: 0px;
+  right: 7px;
+  font-size: 14px;
+  opacity: 0.54; }
+
+.hint {
+    /* Position the hint */
+    position: absolute;
+    left: 2px;
+    right: auto;
+    bottom: 7px;
+    /* Copy styles from ng-messages */
+    font-size: 12px;
+    line-height: 14px;
+    transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
+    /* Set our own color */
+    color: grey; }
+  .inputdemoErrorsAdvanced .hint.ng-hide,
+  .inputdemoErrorsAdvanced .hint.ng-enter,
+  .inputdemoErrorsAdvanced .hint.ng-leave.ng-leave-active {
+    bottom: 26px;
+    opacity: 0; }
+  .inputdemoErrorsAdvanced .hint.ng-leave,
+  .inputdemoErrorsAdvanced .hint.ng-enter.ng-enter-active {
+    bottom: 7px;
+    opacity: 1; }
+
+
+/*
+Copyright 2018 Google LLC. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that can be found
+in the LICENSE file at http://material.angularjs.org/HEAD/license.
+*/
+</style>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+  });
+</script>
+</head>
+<body ng-app="blankapp" ng-cloak ng-controller="mainController as mainctrl" style='font-family:"lato";' id="body">
+<!-- Left Side Bar -->
+<md-sidenav class="md-sidenav-right" md-component-id="right" md-whiteframe="10" style='max-width:10000px' ng-style="{'width':mainctrl.sidenav_width}">
+  <md-toolbar class="md-theme-indigo">
+    <div class="md-toolbar-tools">
+    <h1 class="md-toolbar-tools">Project Panel</h1>
+    <span flex></span>
+    <md-button ng-click="mainctrl.toggleLeft('right',false);" >
+      <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+    </md-button></div>
+  </md-toolbar>
+  <md-content layout-margin="">
+    <div layout='column'>
+      <md-tooltip md-direction="top">Click To Activate Another Project</md-tooltip>
+      <md-button ng-click="mainctrl.change_project_modal($event)" class="md-primary"><span ng-hide="mainctrl.activated_project_name==undefined">{{mainctrl.activated_project_name}} is activated</span><span ng-show="mainctrl.activated_project_name==undefined">Click to add new project</span></md-button>
+    </div>
+    <p ng-show="mainctrl.activated_project_name==undefined"><em>There is no project associated with this computer.</em></p>
+ <div id='jstree'></div>
+  </md-content>
+  <md-divider></md-divider>
+  <div layout='row' layout-align="left center">
+    <md-button ng-click="mainctrl.toggleLeft('right',false);" class="md-accent">
+      Close this Sidenav
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Question" ng-click="mainctrl.show_tutorial('project_panel')">
+      <md-tooltip md-direction="bottom">Tutorial</md-tooltip>
+      <i class="material-icons">help_outline</i>
+    </md-button>
+  </div>
+
+</md-sidenav>
+
+
+ <md-tabs id="main_tab" md-dynamic-height="" md-border-bottom="" md-selected="mainctrl.tabIndex">
+    <md-tab label="MetDA">
+      <md-content class="md-padding" style="background-color:white">
+      <div layout="row">
+        <div flex="10">
+          <div layout='column' style="position:fixed;top:36px;">
+              <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.toggleLeft()">
+                <i class="material-icons">menu</i>
+              </md-button>
+            <md-button class="md-icon-button" aria-label="Question" ng-click="mainctrl.show_tutorial('mainpage')">
+              <md-tooltip md-direction="right">Tutorial</md-tooltip>
+              <i class="material-icons">help_outline</i>
+            </md-button>
+
+
+            <md-button class="md-icon-button" aria-label="Subscribe" ng-click="mainctrl.subscribe_modal()">
+              <md-tooltip md-direction="right">Subscribe!</md-tooltip>
+              <i class="material-icons">notifications_active</i>
+            </md-button>
+
+
+          </div>
+          <!--<md-button class="md-raised md-hue-1">Toggle Left Project Panel</md-button>-->
+        </div>
+        <div flex="90" class='mainpage'>
+          <h1 style="text-align:center">Welcome!</h1>
+          <p style="text-align:center">Everything you need to analysis your metabolomics data is in the <b><span style="color:#ff0000;">M</span><span style="color:#980360;">e</span><span style="color:#3105bf;">t</span><span style="color:#2832a4;">D</span><span style="color:#1f5f89;">A</span></b>. </p>
+
+
+         <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Dataset Subset';" ui-sref="subset_state" md-colors="{background: 'red'}">Data Subset</md-button>
+            <md-button class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Data Attaching';" ui-sref="data_attach_state" md-colors="{background: 'red'}">Data Attaching</md-button>
+            <div class="label">Data Management</div>
+          </section>
+
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'remove zero standard deviation compound';" ui-sref="rm_0_sd_state" md-colors="{background: 'pink'}">remove zero standard deviation compound</md-button>
+
+
+            <md-button  md-colors="{background: 'pink'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Outlier Treatment';" ui-sref="outlier_treatment_state">Outlier Treatment</md-button>
+            <div class="label"><md-tooltip md-direction="top">Clean the data to make them ready for data processing</md-tooltip>Dataset Cleaning</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button  md-colors="{background: 'purple'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'QRILC';" ui-sref="QRILC_state">QRILC</md-button>
+            <md-button  md-colors="{background: 'purple'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'RFmiss';" ui-sref="RFmiss_state">RFmiss</md-button>
+            <md-button  md-colors="{background: 'purple'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'kNNmiss';" ui-sref="kNNmiss_state">kNNmiss</md-button>
+            <md-button  md-colors="{background: 'purple'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'constImp';" ui-sref="constImp_state">Impute Constant Value</md-button>
+            <!--<md-button  md-colors="{background: 'purple'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'SVDmiss';" ui-sref="SVDmiss_state">SVDmiss</md-button>-->
+
+            <div class="label"><md-tooltip md-direction="top">Impute the missing values in the dataset for each compound</md-tooltip>Missing Value Imputation</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'mTIC Normalization';" ui-sref="mTIC_state">mTIC Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Sum Normalization';" ui-sref="sum_normalization_state">Sum Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Median Normalization';" ui-sref="median_normalization_state">Median Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'PQN Normalization';" ui-sref="PQN_normalization_state">PQN Normalization</md-button>
+              <!--<md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Cubic Normalization';" ui-sref="cubic_normalization_state">Cubic Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Li-Wong Normalization';" ui-sref="liwong_normalization_state">Li-Wong Normalization</md-button>-->
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Linear Normalization';" ui-sref="linear_normalization_state">Linear Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Quantile Normalization';" ui-sref="quantile_normalization_state">Quantile Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Batch Ratio Normalization';" ui-sref="batchratio_normalization_state">Batch Ratio Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'LOESS Normalization';" ui-sref="loess_normalization_state">LOESS Normalization</md-button>
+              <md-button  md-colors="{background: 'indigo'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'SERRF';" ui-sref="serrf_normalization_state">SERRF Normalization</md-button>
+
+            <div class="label"><md-tooltip md-direction="top">To remove the systematic variation in the dataset</md-tooltip>Sample Normalization</div>
+          </section>
+
+          <section layout="row" layout-sm='column' layout-align="left center" layout-wrap="">
+            <md-button  md-colors="{background: 'blue'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Log Transformation';" ui-sref="log_transformation_state">Log Transformation</md-button>
+            <md-button  md-colors="{background: 'blue'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Power Transformation';" ui-sref="power_transformation_state">Power Transformation</md-button>
+            <md-button  md-colors="{background: 'blue'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Box-Cox Transformation';" ui-sref="boxcox_transformation_state">Box-Cox Transformation</md-button>
+          <div class="label"><md-tooltip md-direction="top">To correct for heteroscedasticity, convert multiplicative relations into additive relations, make skewed distributions (more) symmetric, and reduce outlier effect</md-tooltip>Data Transformation</div>
+          </section>
+          <section layout="row" layout-sm='column' layout-align="left center" layout-wrap="">
+            <md-button  md-colors="{background: 'cyan'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Fold Change';" ui-sref="fold_change_state">Fold Change</md-button>
+
+            <md-button  md-colors="{background: 'cyan'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Group Average';" ui-sref="group_average_state">Group Average</md-button>
+
+          <div class="label"><md-tooltip md-direction="top">To describe, show or summarize data in a meaningful way such that, e.g. patterns might emerge from the data.</md-tooltip>Descriptive Statistics</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Student t test';" ui-sref="student_t_test_state">Student t test</md-button>
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Welch t test';" ui-sref="welch_t_test_state">Welch t test</md-button>
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Mann-Whitney U test';" ui-sref="mann_whitney_u_test_state">Mann-Whitney U test</md-button>
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Paired t-test';" ui-sref="paired_t_test_state">Paired t-test</md-button>
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Wilcoxon Signed Rank test';" ui-sref="wilcoxon_signed_rank_test_state">Wilcoxon Signed Rank test</md-button>
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'One-way ANOVA';" ui-sref="anova_state">One-way ANOVA</md-button>
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'One-way Welch ANOVA';" ui-sref="welch_anova_state">One-way Welch ANOVA</md-button>
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Kruskal-Wallis test';" ui-sref="kruskal_wallis_test_state">Kruskal-Wallis test</md-button>
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'One-way Repeated ANOVA';" ui-sref="repeated_anova_state">One-way Repeated ANOVA</md-button>
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Friedman test';" ui-sref="friedman_test_state">Friedman test</md-button>
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Jonckeere-Terpstra test';" ui-sref="jonckheere_terpstra_test_state">Jonckeere-Terpstra test</md-button>
+
+
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Two-Way ANOVA';" ui-sref="two_way_anova_state">Two-Way ANOVA</md-button>
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Two-Way Mixed ANOVA';" ui-sref="two_way_mixed_anova_state">Two-Way Mixed ANOVA</md-button>
+
+            <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Volcano Plot';" ui-sref="volcano_plot_state">Volcano Plot</md-button>
+
+          <div class="label"><md-tooltip md-direction="top">To test a hypothesis by comparing it with the null hypothesis. </md-tooltip>Hypothesis Testings</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+          <md-button  md-colors="{background: 'green'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Simple Linear Regression';" ui-sref="simple_linear_regression_state">Simple Linear Regression</md-button>
+          <md-button md-colors="{background: 'green'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Correlations';" ui-sref="correlation_state">Correlations</md-button>
+          <md-button md-colors="{background: 'green'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Partial Correlation';" ui-sref="partial_correlation_state">Partial Correlation</md-button>
+          <div class="label"><md-tooltip md-direction="top">a measure of the relation between the mean value of one variable (e.g., output) and corresponding values of other variables (e.g., time and cost). </md-tooltip>Regressions</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button md-colors="{background: 'lime'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Shapiro-Wilk Normality Test';" ui-sref="shapiro_wilk_test_state">Shapiro-Wilk Normality Test</md-button>
+            <md-button md-colors="{background: 'lime'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'FDR Correction';" ui-sref="fdr_correction_state">FDR Correction</md-button>
+            <div class="label"><md-tooltip md-direction="top">Other supplementary statistical methods</md-tooltip>Auxiliary</div>
+
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button md-colors="{background: 'yellow'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Principal Component Analysis';" ui-sref="pca_state">Principal Component Analysis</md-button>
+
+
+            <md-button md-colors="{background: 'yellow'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Heatmap';" ui-sref="heatmap_state">Heatmap</md-button>
+
+            <md-button md-colors="{background: 'yellow'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Partial Least Square - Discriminant Analysis';" ui-sref="plsda_state">Partial Least Square - Discriminant Analysis</md-button>
+            <div class="label"><md-tooltip md-direction="top">Draw conclusion, make prediction by using multiple compounds value.</md-tooltip>Multivariate Methods & Machine Learning</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button md-colors="{background: 'amber'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'MetaMapp Pathway Mapping';" ui-sref="metamapp_state">MetaMapp Pathway Mapping</md-button>
+            <md-button md-colors="{background: 'amber'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'ChemRICH';" ui-sref="chemrich_state">ChemRICH</md-button>
+            <div class="label"><md-tooltip md-direction="top">Link from statistics to biological interpretations.</md-tooltip>Biological Interpretations</div>
+          </section>
+
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button md-colors="{background: 'orange'}"   class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'One-Way Boxplots';" ui-sref="one_way_boxplot_state">One-Way Boxplots</md-button>
+            <div class="label"><md-tooltip md-direction="top">Visualize each compound.</md-tooltip>Plots and Visualizations</div>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button  md-colors="{background: 'blue-grey'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'One-Way Boxplot Admin';" ui-sref="one_way_boxplot_admin_state">One-Way Boxplot Admin</md-button>
+            <div class="label"><md-tooltip md-direction="top">Change settings for the account</md-tooltip>Account Settings</div>
+          </section>
+
+<p style='color:white'>.</p><p style='color:white'>.</p><p style='color:white'>.</p>
+
+
+
+        </div>
+      </div>
+      </md-content>
+    </md-tab>
+    <md-tab label="{{mainctrl.module_label}}">
+      <md-content class="md-padding" style='background-color:white'>
+      <div layout="row">
+        <div flex="100">
+          <div ui-view class="wrapper wrapper-content" id='second_tab'></div><p style="color:white">a </p>
+        </div>
+      </div>
+      </md-content>
+    </md-tab>
+
+
+
+  </md-tabs>
+
+
+
+  <!-- jQuery -->
+  <script src="js/jquery.js"></script>
+
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="js/angularjs.min.js"></script>
+  <script src="js/angular-animate.js"></script>
+  <script src="js/angular-aria.js"></script>
+  <script src="js/angular-message.js"></script>
+
+ <script type='text/javascript' src='js/loading-bar.min.js'></script>
+
+  <script src="js/angular-sanitize.js"></script>
+  <script src="js/angular-material.js"></script>
+  <script src="js/underscore.js"></script>
+  <script src="js/angular-router.js"></script>
+  <script src="js/angular-route.js"></script>
+  <!-- PouchDB -->
+  <script type="text/javascript" src="js/pouchdb.min.js"></script>
+
+  <!-- Icon Animation -->
+  <script src="js/svg-morpheus.js"></script>
+  <!-- Angular Material DataTable -->
+  <script src="js/lodash.min.js"> </script>
+  <script src="js/material-icon.js"></script>
+
+
+  <!--ng-file-upload-->
+  <script type="text/javascript" src="js/ng-file-upload-shim.min.js"></script>
+  <script type="text/javascript" src="js/ng-file-upload.min.js"></script>
+
+  <!-- data.table -->
+  <script type="text/javascript" src="js/jquery-dataTable.min.js"></script>
+
+  <!-- google chart -->
+  <script type="text/javascript" src="js/loader.js"></script>
+
+  <!-- plotly-->
+  <script src="js/plotly.min.js"></script>
+
+
+  <!-- jsTree -->
+  <script type="text/javascript" src="js/jstree.min.js"></script>
+
+  <!--Papa-->
+  <script type="text/javascript" src='js/papaparse.min.js'></script>
+
+  <!--OpenCPU-->
+  <script src="js/opencpu-0.5.js"></script>
+  <!-- <script src="//cdn.opencpu.org/opencpu-0.4.js"></script>-->
+
+
+
+  <script src="js/FileSaver.js"></script>
+  <script src="js/jszip.min.js"></script>
+
+  <!--LOESS
+  <script src="js/index.js"></script>-->
+  <!-- science LOESS
+  <script src="js/science.v1.min.js"></script>-->
+
+
+  <!--md color picker-->
+  <script src="js/tinycolor.js"></script>
+  <script src="js/mdColorPicker.min.js"></script>
+  <script src="js/angular-cookies.min.js"></script>
+  <script src="js/palette.js"></script>
+
+
+
+  <script src="js/app.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/mainController.js"></script>
+  <script src="js/student_t_testController.js"></script>
+  <script src="js/welch_t_testController.js"></script>
+  <script src="js/shapiro_testController.js"></script>
+  <script src="js/shapiro_wilk_testController.js"></script>
+  <script src="js/pcaController.js"></script>
+
+  <script src="js/loess_normalizationController.js"></script>
+  <script src="js/serrf_normalizationController.js"></script>
+  <script src="js/mTICController.js"></script>
+  <script src="js/median_normalizationController.js"></script>
+  <script src="js/sum_normalizationController.js"></script>
+  <script src="js/PQN_normalizationController.js"></script>
+  <script src="js/cubic_normalizationController.js"></script>
+  <script src="js/liwong_normalizationController.js"></script>
+  <script src="js/linear_normalizationController.js"></script>
+  <script src="js/quantile_normalizationController.js"></script>
+  <script src="js/batchratio_normalizationController.js"></script>
+
+  <script src="js/log_transformationController.js"></script>
+  <script src="js/power_transformationController.js"></script>
+  <script src="js/boxcox_transformationController.js"></script>
+
+
+  <script src="js/fold_changeController.js"></script>
+  <script src="js/plsdaController.js"></script>
+  <script src="js/simple_linear_regressionController.js"></script>
+
+
+  <script src="js/two_way_anovaController.js"></script>
+  <script src="js/fdr_correctionController.js"></script>
+  <script src="js/jonckheere_terpstra_testController.js"></script>
+  <script src="js/two_way_mixed_anovaController.js"></script>
+
+   <script src="js/heatmapController.js"></script>
+
+   <script src="js/subsetController.js"></script>
+
+   <script src="js/mann_whitney_u_testController.js"></script>
+   <script src="js/anovaController.js"></script>
+   <script src="js/repeated_anovaController.js"></script>
+   <script src="js/friedman_testController.js"></script>
+   <script src="js/welch_anovaController.js"></script>
+   <script src="js/kruskal_wallis_testController.js"></script>
+   <script src="js/paired_t_testController.js"></script>
+   <script src="js/wilcoxon_signed_rank_testController.js"></script>
+   <script src="js/volcano_plotController.js"></script>
+
+   <script src="js/data_attachController.js"></script>
+
+   <script src="js/one_way_boxplotController.js"></script>
+   <script src="js/one_way_boxplot_adminController.js"></script>
+
+
+   <script src="js/metamappController.js"></script>
+
+   <script src="js/chemrichController.js"></script>
+  <script src="js/QRILCController.js"></script>
+  <script src="js/RFmissController.js"></script>
+  <script src="js/kNNmissController.js"></script>
+  <script src="js/SVDmissController.js"></script>
+  <script src="js/constImpController.js"></script>
+
+
+  <script src="js/rm_0_sdController.js"></script>
+  <script src="js/outlier_treatmentController.js"></script>
+  <script src="js/group_averageController.js"></script>
+  <script src="js/correlationController.js"></script>
+  <script src="js/partial_correlationController.js"></script>
+
+
+
+
+
+
+  <script src="js/state1Controller.js"></script>
+
+
+
+  <script src="js/jStat.js"></script>
+  <script src="js/math.min.js"></script>
+  <script src="js/lodash.min.js"></script>
+
+  <!--<script src="js/ml.js"></script>-->
+  <script src="js/ml.min.js"></script>
+
+
+
+
+
+  <script src="js/parallel.js"></script>
+  <script src="js/gpu.js"></script>
+  <script src="js/loess GPU.js"></script>
+  <script src="js/loess GPU2.js"></script>
+ <!-- <script src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script src="js/GPUsrc/core/gpu.js"></script>-->
+
+
+  <script type="text/javascript" src="js/MathJax-2.7.5/MathJax.js?config=TeX-AMS_HTML-full"></script>
+  <script src="js/cytoscape.min.js"></script>
+
+
+
+
+
+
+<script type="text/ng-template" id="initialize.html">
+<md-dialog aria-label="Inicialize">
+  <form ng-cloak>
+    <md-toolbar style='background-color:khaki; color:black'>
+      <div class="md-toolbar-tools">
+        <h2>Hi!</h2>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <h3>Welcome to <span style="color:#ff0000;">M</span><span style="color:#980360;">e</span><span style="color:#3105bf;">t</span><span style="color:#2832a4;">D</span><span style="color:#1f5f89;">A</span>!</h3>
+        <p>A meticulously designed Data Analysis toolbox for Metabolomics.</p>
+        <ul>
+          <li>Click the <md-button  md-colors="{background: 'teal'}" class="md-primary md-hue-1">Button</md-button> with the statistical analysis you want to perform.</li>
+          <li>Always click <i class="material-icons">help_outline</i> when you have any questions!</li>
+          <li style="color:red">Please note: the current version of MetDA is still under development. Do save your result, as we will lose all the track everytime we update MetDA. When the MetDA is published, this problem won't happen. Contact slfan@ucdavis.edu for more information.</li>
+        </ul>
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()" class="md-primary md-raised" style="background-color: khaki; color: black;">
+        Got it
+      </md-button>
+    </md-dialog-actions>
+
+
+  </form>
+</md-dialog>
+
+</script>
+
+<script type="text/ng-template" id="upload_data.html">
+<md-dialog aria-label="Upload a Dataet">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Upload a Dataet</h2>
+        <md-button class="md-icon-button" aria-label="Question" ng-click="mainctrl.show_tutorial('upload_dataset')">
+          <md-tooltip md-direction="bottom">Tutorial</md-tooltip>
+          <i class="material-icons">help_outline</i>
+        </md-button>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <h2>Upload a Dataset to Your Project</h2>
+
+
+        <p>You can upload a dataset with the specific format. Please download the example dataset to see the format requirement.</p>
+
+
+      <div layout='column'>
+      <div layout='row'>
+      <div flex="20"></div>
+      <div flex="60">
+        <div layout="column" layout-align="center center"><button id='upload_dataset' type="file" ngf-select="upload_dataset($file, $invalidFiles)" accept=".xlsx, .csv" ngf-max-size="15MB" class="md-button md-raised md-hue-1">Select Local File</button><div style="font:smaller"><p style="margin-bottom:0">{{f.name}} <span style="color:red">{{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}</span></p><md-progress-linear md-mode="determinate" value="{{f.progress}}"></md-progress-linear></div></div>
+      </div>
+      </div>
+      <div layout="column">
+      <md-divider></md-divider>
+      <div ng-bind-html="upload_data_table_summary"></div>
+        <div layout="row">
+        <div flex='100'>
+          <table id="upload_data_table_preview"  class="display"></table>
+        </div>
+        </div>
+      </div>
+
+
+
+      </div>
+
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <md-button ng-click="confirm_and_upload_dataset()" class="md-primary md-raised">
+        Confirm and Upload This Dataset
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+</script>
+<script type="text/ng-template" id="tutorial.html"><md-dialog aria-label="Tutorial">
+<form ng-cloak>
+<md-toolbar style='background-color:darkcyan'>
+  <div class="md-toolbar-tools">
+    <h3>{{name}}</h3>
+    <span flex></span>
+    <md-button class="md-icon-button" ng-click="cancel()">
+      <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+<md-dialog-content>
+<div class="md-dialog-content">
+  <div ng-show="name=='Main Page Tips'">
+    <ul>
+      <li>Click the <md-button  md-colors="{background: 'teal'}">Button</md-button> from the MetDA mainpage to perform the statistical analysis you want.</li>
+      <li>Whenever you have question, always find the  <i class="material-icons">help_outline</i> on the page to get some tips.</li>
+      <li>Click <i class="material-icons">menu</i> (top-left) to open the project panel for more options.</li>
+      <li>Always feel free to leave a message blow.</li>
+    </ul>
+  </div>
+  <div ng-show="name=='Project Panel Tips'">
+    <ul>
+      <li ng-show="activated_project_name==undefined"> Click the <md-button ng-click="change_project_modal($event)" class="md-primary"><span ng-hide="activated_project_name==undefined">{{m.activated_project_name}} is activated</span><span ng-show="activated_project_name==undefined">Click to add new project</span></md-button> button in the Project Panel to add a new project first.</li>
+      <li ng-hide="activated_project_name==undefined"> This panel shows the structure of the activated project: <em>{{activated_project_name}}</em>.</li>
+      <li ng-hide="activated_project_name==undefined"> Right click the node (e.g. <i class="fa fa-folder" aria-hidden="true"></i>)  for more options.</li>
+    </ul>
+  </div>
+  <div ng-show="name=='Available Projects Tips'">
+    <li>Click <a href="" ng-click="create_project_gif = !create_project_gif" style="color:black"><i class="fa fa-play-circle"></i><md-tooltip md-direction="right">see how to activate a project</md-tooltip></a> to watch how to create a new project.</li>
+    <li ng-show="create_project_gif"><img src="tutorials/create_project.gif" alt="Create Project GIF" height="553" width="952"></li>
+    <li>Click <a href="" ng-click="activate_project_gif = !activate_project_gif" style="color:black"><i class="fa fa-play-circle"></i><md-tooltip md-direction="right">see how to activate a project</md-tooltip></a> to watch how to activate an existing project.</li>
+    <li ng-show="activate_project_gif"><img src="tutorials/activate_project.gif" alt="Create Project GIF" height="553" width="952"></li>
+
+  </div>
+  <md-divider></md-divider>
+  <div>
+    <md-input-container class="md-block">
+      <label>Didn't find what you want? Leave a message!</label>
+      <textarea ng-model="message" rows="3"></textarea>
+    </md-input-container>
+    <md-button ng-disabled="submit_text!=='Submit'" md-colors="{background: 'teal'}" ng-show='message.length>0' ng-click="submit_message(message)">{{submit_text}}</md-button>
+  </div>
+
+      <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()" md-colors="{background: 'teal'}">
+        Got it
+      </md-button>
+    </md-dialog-actions>
+
+</div>
+</md-dialog-content>
+</form>
+
+</md-dialog>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/ng-template" id="subscribe.html"><md-dialog aria-label="Subscribe">
+<form ng-cloak>
+<md-toolbar style='background-color:darkcyan; color:black'>
+  <div class="md-toolbar-tools">
+    <h3>Subscribe <span style="color:#ff0000;">M</span><span style="color:#980360;">e</span><span style="color:#3105bf;">t</span><span style="color:#2832a4;">D</span><span style="color:#1f5f89;">A</span>!</h3>
+    <span flex></span>
+    <md-button class="md-icon-button" ng-click="cancel()">
+      <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+<md-dialog-content>
+<div class="md-dialog-content">
+  <div>
+    Subscribe MetDA to get a headsup of major updates!
+    <md-input-container class="md-block" flex-gt-sm="">
+      <label>Email</label>
+      <input name="email" ng-model="email" required="" minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/">
+
+      <div class="hint" ng-show="showHints">How can we reach you?</div>
+      <p style-"color:white"></p>
+
+    </md-input-container>
+  </div>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="submit()" style='background-color:darkcyan; color:black' ng-disabled="submit_text!=='Submit'" >
+        {{submit_text}}
+      </md-button>
+    </md-dialog-actions>
+
+</div>
+</md-dialog-content>
+</form>
+
+</md-dialog>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/ng-template" id="one_stop_modal.html">
+<md-dialog aria-label="One-Stop Quick Analysis" flex="90">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>One-Stop Quick Analysis</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="overflow: auto;">
+      <div class="md-dialog-content" >
+        <div layout="row">
+          <div flex="50">
+          <div layout='row'>
+            <div flex="40">
+            <p>select a project</p>
+              <!--display different projects as bottons-->
+              <div layout="row" layout="column" layout-align="center center" layout-wrap="">
+
+                <md-button ng-repeat="project in projects track by project.id" md-colors="{background: '{{colors[$index]}}'}" md-colors-watch="false" ng-click="view_project(project)"><md-tooltip md-direction="right">{{project.name}}</md-tooltip>{{project.name}}</md-button>
+              </div>
+              </div>
+              <div flex="60" style='overflow:auto'>
+              <p style='color:black'>select a project and view what's inside</p>
+              <md-whiteframe class="md-whiteframe-1dp" layout-align="center center">
+                <div id="view_project_tree_one_stop"></div>
+              </md-whiteframe>
+              <div>
+              <md-button class="md-raised md-primary" ng-disabled="select_one_stop_disabled" ng-click="select_pipeline()"><md-tooltip md-direction="bottom" ng-show="!select_one_stop_disabled">Select Pipeline</md-tooltip>Apply Same Analysis Pipeline</md-button><md-tooltip md-direction="bottom" ng-show="select_one_stop_disabled">you have to select a valid dataset first</md-tooltip></div>
+              <p style='color:black'>Proposed Project Structure</p>
+              <md-whiteframe class="md-whiteframe-1dp" layout-align="center center">
+                <div id="chosen_project_tree_one_stop"></div>
+              </md-whiteframe>
+              <!--<div>
+              <md-button class="md-raised md-primary" ng-click="confirm_pipeline()">Confirm This Analysis Pipeline</md-button></div>-->
+              </div>
+            </div>
+          </div>
+
+          <div flex="50">
+          <div layout='row'>
+            <div flex="100">
+
+              <md-tabs md-selected="selectedIndex" md-border-bottom="" md-dynamic-height="">
+                <md-tab ng-repeat="structure in new_tree_structure" label="{{structure.text}}">
+<!--DIFFERNET ANALYSIS TYPE LIST HERE-->
+                  <div ng-show="structure.analysis_type == 'QRILC'">
+                    <p>No Specific Option for QRILC imputation</p>
+                    <p><em>Click Next</em></p>
+                  </div>
+
+                  <div ng-show="structure.analysis_type == 'boxcox_transformation'">
+                    <p>Please Specify All the Study Design Related Sample Metadata</p>
+                    <div layout='rows'>
+                      <md-input-container class="md-block" flex>
+                          <label>Study Design Related Columns</label>
+                          <md-select ng-model="structure.parameters.columns" multiple="">
+                            <md-option ng-repeat="column_option in sample_column_options" value="{{column_option}}">
+                              {{column_option}}
+                            </md-option>
+                          </md-select>
+                      </md-input-container>
+                    </div>
+                  </div>
+
+                  <div ng-show="structure.analysis_type == 'fold_change'">
+                    <p>Please Specify a Column with Two Groups</p>
+                    <div layout="row">
+                      <md-input-container class="md-block" flex>
+                        <label>Group Column</label>
+                        <md-select name="column" ng-model="structure.parameters.column" required="">
+                          <md-option ng-repeat="groups_option in sample_column_options" value="{{groups_option}}">{{groups_option}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex='30'>
+                        <label>Method</label>
+                        <md-select name="method" ng-model="structure.parameters.method" required="">
+                          <md-option ng-repeat="groups_option in structure.fold_change_method_options" value="{{groups_option}}">{{groups_option}}</md-option>
+                        </md-select>
+                      </md-input-container>
+
+                      <md-input-container class="md-block" flex='30'>
+                        <label>Direction</label>
+                        <md-select name="direction" ng-model="structure.parameters.direction" required="">
+                          <md-option ng-repeat="groups_option in structure.fold_change_direction_options" value="{{groups_option.id}}">{{groups_option.text}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+                  </div>
+
+                  <div ng-show="structure.analysis_type == 'mann_whitney_u_test'">
+                    <p>Please Specify a Column with Two Groups</p>
+                    <div layout='rows'>
+                        <md-input-container class="md-block" flex>
+                            <label>column</label>
+                            <md-select ng-model="structure.parameters.column">
+                              <md-option ng-repeat="column_option in sample_column_options" value="{{column_option}}">
+                                {{column_option}}
+                              </md-option>
+                            </md-select>
+                        </md-input-container>
+                       <md-input-container class="md-block" flex>
+                        <label>False Discovery Rate Correction</label>
+                        <md-select ng-model="structure.parameters.FDR">
+                          <md-option ng-repeat = "FDR_option in structure.FDR_options" value="{{FDR_option.id}}">{{FDR_option.text}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                       <md-input-container class="md-block" flex='30'>
+                        <label>Testing Aim</label>
+                        <md-select ng-model="structure.parameters.alternative">
+                          <md-option ng-repeat = "alternative_option in structure.alternative_options" value="{{alternative_option.id}}">{{alternative_option.text}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+                  </div>
+
+                  <div ng-show="structure.analysis_type == 'pca'">
+                    <p>Specify a Scaling Method</p>
+                    <div layout='rows'>
+                      <md-input-container class="md-block" flex='30'>
+                        <label>Data Scaling</label>
+                        <md-select ng-model="structure.parameters.scale">
+                          <md-option ng-repeat = "scale_option in structure.scale_options" value="{{scale_option.id}}">{{scale_option.text}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+
+
+
+<div layout="row">
+      <div flex="100">
+      <p>Pair Score Plot</p>
+         <fieldset style="margin-right:15">
+          <legend>Colors:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Color By:</label>
+            <md-select ng-model="structure.parameters.pair_score_plot.color_by">
+              <md-option ng-repeat = "color_by_option in structure.parameters.pair_score_plot.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+          <div ng-repeat="color in structure.parameters.pair_score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" skip-hide='true' preserve-scope='true'></div>
+
+         </fieldset>
+
+         <fieldset style="margin-right:15">
+          <legend>Shapes:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Shape By:</label>
+            <md-select ng-model="structure.parameters.pair_score_plot.shape_by">
+              <md-option ng-repeat = "shape_by_option in structure.parameters.pair_score_plot.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.pair_score_plot.shape">
+            <label>Shape of {{shape.levels}}:</label>
+            <md-select ng-model="shape.option">
+              <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
+            </md-select>
+          </md-input-container>
+         </fieldset>
+
+    <div layout="row">
+      <div flex="15" layout="" layout-align="center center"><span class="md-body-1">Scatter Size</span></div>
+      <md-slider flex="60" class="md-primary" md-discrete="" ng-model="structure.parameters.pair_score_plot.scatter_size" step="0.1" min="1" max="15" aria-label="Scatter Size"></md-slider>
+      <md-input-container flex>
+        <input type="number" ng-model="structure.parameters.pair_score_plot.scatter_size" aria-label="Scatter Size" aria-controls="blue-slider" step="0.1" min="1" max="15"  flex="60">
+      </md-input-container>
+    </div>
+
+
+
+      </div>
+      </div>
+
+
+
+
+
+
+
+
+<div layout="row">
+      <div flex="100">
+      <p>Score Plot</p>
+        <div layout='column'>
+        <fieldset style="margin-right:15">
+          <legend>Colors:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Color By:</label>
+            <md-select ng-model="structure.parameters.score_plot.color_by">
+              <md-option ng-repeat = "color_by_option in structure.parameters.score_plot.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div ng-repeat="color in structure.parameters.score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" skip-hide='true' preserve-scope='true'></div>
+
+
+          <md-input-container class="md-block">
+            <md-checkbox name="tos" ng-model="structure.parameters.score_plot.ellipse_color" required="" class='md-primary'>
+              Add Ellipse According To Colors.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+
+         <fieldset style="margin-right:15">
+          <legend>Shapes:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Shape By:</label>
+            <md-select ng-model="structure.parameters.score_plot.shape_by">
+              <md-option ng-repeat = "shape_by_option in structure.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.score_plot.shape">
+            <label>Shape of {{shape.levels}}:</label>
+            <md-select ng-model="shape.option">
+              <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <md-checkbox name="ellipse_shape" ng-model="structure.parameters.score_plot.ellipse_shape" required="" class='md-primary'>
+              Add Ellipse According To Shapes.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+         <fieldset style='margin-right:15'>
+           <legend>Other Parameters:</legend>
+           <div layout="row">
+              <md-input-container flex='50'>
+                <label>PC x Axis:</label>
+                <md-select ng-model="structure.parameters.score_plot.pcx">
+                  <md-option ng-repeat = "pcx_option in structure.parameters.score_plot.pcx_options" value="{{pcx_option.value}}">{{pcx_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+              <md-input-container flex='50'>
+                <label>PC y Axis:</label>
+                <md-select ng-model="structure.parameters.score_plot.pcy">
+                  <md-option ng-repeat = "pcy_option in structure.parameters.score_plot.pcy_options" value="{{pcy_option.value}}">{{pcy_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+           </div>
+
+            <div layout="row">
+              <div flex="15" layout="" layout-align="center center"><span class="md-body-1">Scatter Size</span></div>
+              <md-slider flex="60" class="md-primary" md-discrete="" ng-model="structure.parameters.score_plot.scatter_size" step="0.1" min="1" max="15" aria-label="Scatter Size"></md-slider>
+              <md-input-container>
+                <input type="number" ng-model="structure.parameters.score_plot.scatter_size" aria-label="Scatter Size" aria-controls="blue-slider" step="0.1" min="1" max="15"  flex="60">
+              </md-input-container>
+            </div>
+
+            <md-input-container class="md-block">
+              <md-checkbox name="tos" ng-model="structure.parameters.score_plot.add_center" required="" class='md-primary'>
+                Add Group Centers.
+              </md-checkbox>
+            </md-input-container>
+
+         </fieldset>
+        </div>
+      </div>
+    </div>
+
+<div layout="row">
+      <div flex="100">
+      <p>Loading Plot</p>
+        <div layout='column'>
+        <fieldset style="margin-right:15">
+          <legend>Colors:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Color By:</label>
+            <md-select ng-model="structure.parameters.loading_plot.color_by">
+              <md-option ng-repeat = "color_by_option in structure.parameters.loading_plot.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div ng-repeat="color in structure.parameters.loading_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" skip-hide='true' preserve-scope='true'></div>
+
+
+          <md-input-container class="md-block">
+            <md-checkbox name="tos" ng-model="structure.parameters.loading_plot.ellipse_color" required="" class='md-primary'>
+              Add Ellipse According To Colors.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+
+         <fieldset style="margin-right:15">
+          <legend>Shapes:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Shape By:</label>
+            <md-select ng-model="structure.parameters.loading_plot.shape_by">
+              <md-option ng-repeat = "shape_by_option in structure.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.loading_plot.shape">
+            <label>Shape of {{shape.levels}}:</label>
+            <md-select ng-model="shape.option">
+              <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <md-checkbox name="ellipse_shape" ng-model="structure.parameters.loading_plot.ellipse_shape" required="" class='md-primary'>
+              Add Ellipse According To Shapes.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+         <fieldset style='margin-right:15'>
+           <legend>Other Parameters:</legend>
+           <div layout="row">
+              <md-input-container flex='50'>
+                <label>PC x Axis:</label>
+                <md-select ng-model="structure.parameters.loading_plot.pcx">
+                  <md-option ng-repeat = "pcx_option in structure.parameters.loading_plot.pcx_options" value="{{pcx_option.value}}">{{pcx_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+              <md-input-container flex='50'>
+                <label>PC y Axis:</label>
+                <md-select ng-model="structure.parameters.loading_plot.pcy">
+                  <md-option ng-repeat = "pcy_option in structure.parameters.loading_plot.pcy_options" value="{{pcy_option.value}}">{{pcy_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+           </div>
+
+            <div layout="row">
+              <div flex="15" layout="" layout-align="center center"><span class="md-body-1">Scatter Size</span></div>
+              <md-slider flex="60" class="md-primary" md-discrete="" ng-model="structure.parameters.loading_plot.scatter_size" step="0.1" min="1" max="15" aria-label="Scatter Size"></md-slider>
+              <md-input-container>
+                <input type="number" ng-model="structure.parameters.loading_plot.scatter_size" aria-label="Scatter Size" aria-controls="blue-slider" step="0.1" min="1" max="15"  flex="60">
+              </md-input-container>
+            </div>
+
+            <md-input-container class="md-block">
+              <md-checkbox name="tos" ng-model="structure.parameters.loading_plot.add_center" required="" class='md-primary'>
+                Add Group Centers.
+              </md-checkbox>
+            </md-input-container>
+
+         </fieldset>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+                  <div ng-show="structure.analysis_type == 'plsda'">
+                    <p>Please Specify Parameters for VIP plot</p>
+                    <div layout="row">
+                      <div flex="100">
+                      <fieldset style="margin-right:15">
+                      <legend>Parameters:</legend>
+                        <md-input-container class="md-block" flex='100'>
+                          <label>Number of Variables:</label>
+                          <input name="n_vip" ng-model="structure.parameters.vip_plot.n_vip" placeholder="number of variables" required="" type="number" min="1" step="1">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex='100'>
+                          <label>Plot Height:</label>
+                          <input name="plot_height" ng-model="structure.parameters.vip_plot.heigth" placeholder="height of plot" type="number" min="100" step="100">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex='100'>
+                          <label>Left Margin:</label>
+                          <input name="left_margin" ng-model="structure.parameters.vip_plot.margin.left" placeholder="margin of left" type="number" min="10" step="5">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex='100'>
+                          <label>Variable Name Font Size:</label>
+                          <input name="left_margin" ng-model="structure.parameters.vip_plot.yaxis_font_size" placeholder="variable name font size" type="number" min="5" step="1">
+                        </md-input-container>
+                      </fieldset>
+
+                      </div>
+                    </div>
+
+                  </div>
+
+
+
+
+
+
+
+
+
+                </md-tab>
+              </md-tabs>
+              <div layout='row'>
+              <md-button class="md-raised md-primary" ng-click="go_to_previous_tab(selectedIndex)" ng-disabled="selectedIndex===0">Previous</md-button>
+              <md-button class="md-raised md-primary" ng-click="go_to_next_tab(selectedIndex)"><span ng-show="selectedIndex!==(new_tree_structure.length-1)">Next</span><span ng-show="selectedIndex===(new_tree_structure.length-1)">Back to Beginning</span></md-button>
+              <span flex></span>
+              <md-button class="md-raised md-primary" ng-click="confirm_pipeline()" ng-disabled="selectedIndex!==(new_tree_structure.length-1)">Confirm & Start Analysis</md-button>
+              </div>
+
+
+
+
+            </div>
+          </div>
+          </div>
+
+        </div>
+      </div>
+    </md-dialog-content>
+
+  </form>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="projects.html">
+<md-dialog aria-label="Available Projects">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Available Projects</h2>
+        <md-button class="md-icon-button" aria-label="Question" ng-click="show_tutorial('available_project')">
+          <md-tooltip md-direction="bottom">Tutorial</md-tooltip>
+          <i class="material-icons">help_outline</i>
+        </md-button>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <h2 ng-show="projects.length==0">You don't have any project yet! Click the green button to create one!</h2>
+        <h2 ng-hide="projects.length==0">There are {{projects.length}} Projects Associated with your Account</h2>
+
+
+        <p>Click the project button to see project content. </p>
+        <md-button ng-repeat="project in projects track by project.id" flex-gt-md="15" flex="30" md-colors="{background: '{{colors[$index]}}'}" md-colors-watch="false" ng-click="view_project(project)">{{project.name}}</md-button>
+
+      <div layout='row'>
+        <div flex='20'></div>
+        <md-whiteframe class="md-whiteframe-1dp" flex="60" layout="" layout-align="center center">
+          <div id="view_project_tree">select a project and view what's inside</div>
+        </md-whiteframe>
+      </div>
+
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <md-button ng-click="new_project_modal()" class="md-raised" md-colors="{background: 'green'}">
+        Create New Project
+      </md-button>
+      <md-button ng-click="delete_project_modal()" class="md-raised">
+        Delete Project
+      </md-button>
+      <span flex></span>
+      <md-button ng-click="activate_project()" class="md-primary md-raised">
+        Activate This Project
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="view_sample_info.html">
+<md-dialog aria-label="View Sample Information">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Dataset Location</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+
+    <div class="md-dialog-content">
+        <div layout='row'>
+          <div flex >
+            <div id='view_sample_info_tree'></div>
+            <p><em>You are attaching the above sample information to a dataset.</em></p>
+            <p><em>The sample information location in the project.</em></p>
+          </div>
+          <div flex>
+            <table id='view_sample_info_data' class='display'></table>
+          </div>
+        </div>
+    </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()" class="md-primary md-raised">
+        Got it
+      </md-button>
+    </md-dialog-actions>
+
+
+
+    </form>
+</md-dialog>
+</script>
+
+
+
+<script type="text/ng-template" id="view_compound_info.html">
+<md-dialog aria-label="View Compound Information">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Upload a Dataet</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+    <div class="md-dialog-content">
+        <div layout='row'>
+          <div flex >
+            <div id='view_compound_info_tree'></div>
+            <p><em>You are attaching the above compound information to a dataset.</em></p>
+            <p><em>The compound information location in the project.</em></p>
+          </div>
+          <div flex>
+            <table id='view_compound_info_data' class='display'></table>
+          </div>
+        </div>
+    </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()" class="md-primary md-raised">
+        Got it
+      </md-button>
+    </md-dialog-actions>
+
+
+
+    </form>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="save_result_to_database.html">
+<md-dialog aria-label="Save Result to the Project">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Save to the Project {{mainctrl.activated_project_name}}</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content style="overflow: auto;">
+      <div class="md-dialog-content">
+        <h2>Which Folder Do You Want to Save Your Results?</h2>
+        <div layout='row'>
+          <div id="tree_for_save"></div>
+        </div>
+    </md-dialog-content>
+
+
+
+    <md-dialog-actions layout="row">
+      <md-button ng-click="cancel()" class="md-raised">
+        Cancel
+      </md-button><span flex></span>
+      <md-button ng-click="save()" class="md-primary md-raised" ng-disabled = "save_button_text === 'Saving'">
+        {{save_button_text}}
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="js/myJS.js"></script>
+</body>
+</html>

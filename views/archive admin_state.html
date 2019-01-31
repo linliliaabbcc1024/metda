@@ -1,0 +1,140 @@
+<div ng-controller = "adminController as ctrl">
+
+  <h1>this is the admin mode.</h1>
+
+  <p>In your dynamoDB, you have {{ctrl.TableNames.length}} tables. They are <code ng-repeat="item in ctrl.TableNames">{{item}}<span ng-hide="$last">,</span></code>.</p>
+
+
+  <h2>Table management</h2>
+
+  <h3>see a table</h3>
+  <div layout='column'>
+    <div layout="row">
+        <md-input-container class="md-block" flex='50'>
+          <label>Table Name</label>
+          <md-select name="table_name" ng-model="ctrl.see_table_name">
+            <md-option  ng-repeat="item in ctrl.TableNames" value="{{item}}">{{item}}</md-option>
+          </md-select>
+        </md-input-container>
+        <md-button ng-click="ctrl.see_table(ctrl.see_table_name)" ng-disabled='ctrl.seeing_table'>See Table</md-button>
+    </div>
+    <div>
+        <div ng-bind-html="ctrl.see_table_result"></div>
+    </div>
+
+  </div>
+
+
+
+  <h3>create new table</h3>
+  <div layout="column">
+    <div layout="row">
+        <md-input-container>
+          <label>New Table Name</label>
+          <input ng-model="ctrl.new_table_name">
+        </md-input-container>
+        <md-input-container>
+          <label>Primary Key</label>
+          <input ng-model="ctrl.primary_key">
+        </md-input-container>
+        <md-button ng-click="ctrl.create_new_table(ctrl.new_table_name, ctrl.primary_key)" ng-disabled="ctrl.creating_table">Create</md-button>
+    </div>
+    <div>
+      <div ng-bind-html="ctrl.new_table_result"></div>
+    </div>
+  </div>
+
+  <h3>delete a table</h3>
+  <div layout="column">
+    <div layout="row">
+        <md-input-container class="md-block" flex='50'>
+          <label>Table Name</label>
+          <md-select name="table_name" ng-model="ctrl.delete_table_name">
+            <md-option  ng-repeat="item in ctrl.TableNames" value="{{item}}">{{item}}</md-option>
+          </md-select>
+        </md-input-container>
+        <md-button ng-click="ctrl.delete_table_confirm($event,ctrl.delete_table_name)">Delete</md-button>
+    </div>
+    <div>
+      <div ng-bind-html="ctrl.delete_table_result"></div>
+    </div>
+  </div>
+
+
+
+
+<h2>Item</h2>
+<div layout="column">
+<div layout='row'>
+    <md-input-container class="md-block" flex='50'>
+      <label>Focused Table</label>
+      <md-select name="focused_table_name" ng-model="ctrl.focused_table_name" ng-change="ctrl.change_focused_table(ctrl.focused_table_name)" ng-disabled = 'ctrl.changing_focused_table'>
+        <md-option  ng-repeat="item in ctrl.TableNames" value="{{item}}">{{item}}</md-option>
+      </md-select>
+    </md-input-container>
+</div>
+<div>
+  <div ng-bind-html="ctrl.change_focused_table_result"></div>
+</div>
+</div>
+
+
+
+
+
+<h3>Create an Item</h3>
+<div layout='column'>
+  <p>Please make sure to check the primary keys by click "see table".</p>
+<div layout='row'>
+        <md-input-container class="md-block" flex='50'>
+          <label>Item</label>
+          <textarea rows="5" ng-model = "ctrl.item_text" md-select-on-focus=""></textarea>
+        </md-input-container>
+        <md-button ng-click="ctrl.create_item(ctrl.focused_table_name, ctrl.item_text)">Create Item</md-button>
+</div>
+<div>
+  <div ng-bind-html="ctrl.create_item_result"></div>
+</div>
+</div>
+
+
+<h3>Read an Item</h3>
+<div layout='column'>
+<div layout='row'>
+        <md-input-container class="md-block" flex='50'>
+          <label>key</label>
+          <textarea rows="5" ng-model = "ctrl.read_item_text" md-select-on-focus=""></textarea>
+        </md-input-container>
+        <md-button ng-click="ctrl.read_item(ctrl.focused_table_name, ctrl.read_item_text)">Read Create Item</md-button>
+</div>
+<div>
+  <div ng-bind-html="ctrl.read_item_result"></div>
+</div>
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

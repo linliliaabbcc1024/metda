@@ -1,0 +1,176 @@
+<div ng-controller = "data_attachController as ctrl">
+
+<!--<h1>Data Attaching</h1>
+<p></p>
+
+
+<div class='col'>
+  <div class="col-md-12">
+    <div id="illustration">display an illustration figure here.</div>
+  </div>
+</div>
+
+
+<div class="warning">
+  <p><strong>Note:</strong> Is there any warning to the user?</p>
+</div>
+-->
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+    <span class="md-headline">Data Attaching</span>
+          <span class="md-subhead">
+      <div layout='row'>
+        <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('data_attaching')">
+        <md-tooltip md-direction="top">Example Dataset</md-tooltip>
+        <i class="material-icons">explicit</i>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="Tutorial">
+          <md-tooltip md-direction="top">Tutorial</md-tooltip>
+          <i class="material-icons">help_outline</i>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('data_attaching')">
+          <md-tooltip md-direction="top">Video Tutorial</md-tooltip>
+          <i class="material-icons">play_circle_filled</i>
+        </md-button>
+      </div>
+    </span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <div layout="row">
+      <div flex='32' class="md-block">
+        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('data_attach');">{{ctrl.select_data_button_text}}</md-button>
+      </div><div flex="2"></div>
+      <div flex='32' class="md-block">
+        <div layout="column" layout-align="center center">
+          <button id='uploadFiles' type="file" ngf-select="ctrl.load_data_from_input_show = false; ctrl.uploadFiles($file, $invalidFiles);" accept=".xlsx, .csv" ngf-max-size="5MB" class="md-button md-raised md-hue-1" ng-disabled="ctrl.upload_data_button_text == 'uploading'">{{ctrl.upload_data_button_text}}</button>
+        </div>
+      </div><div flex='2'></div>
+      <div flex='32' class="md-block">
+        <md-button class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = true">{{ctrl.input_data_button_text}}</md-button>
+      </div>
+    </div>
+    <div ng-show='ctrl.load_data_from_input_show'>
+      <div layout='row'>
+        <div flex='80'>
+          <md-input-container class="md-block">
+            <label>Copy & Paste here</label>
+            <textarea ng-model="ctrl.dataset_input" rows="5" md-select-on-focus=""  md-detect-hidden='' style='max-height:100px;overflow-y: scroll;white-space:pre;' id='dataset_input'></textarea>
+          </md-input-container>
+        </div>
+        <div flex='20'>
+          <button class="md-button md-raised md-hue-1" ng-click='ctrl.upload_data_from_input()' ng-disabled = "ctrl.upload_data_from_input_text === 'uploading' ">{{ctrl.upload_data_from_input_text}}</button>
+        </div>
+
+      </div>
+
+    </div>
+    <div>
+      <table id='preview_datatable' class="display"></table>
+    </div>
+    <md-divider></md-divider>
+    <!--!!!! add parameters here-->
+    <div layout='column' ng-repeat = "sample_info in ctrl.parameters.sample_infos">
+
+      <div layout='row'>
+        <h4 flex>Sample Info{{$index}}</h4>
+        <md-input-container class="md-block" flex='50'>
+              <label>Columns Attaching</label>
+              <md-select ng-model="sample_info.column" multiple>
+                <md-option ng-repeat="column_option in sample_info.column_options" value="{{column_option}}">
+                  {{column_option}}
+                </md-option>
+              </md-select>
+        </md-input-container>
+        <md-button flex class="md-raised" ng-click="ctrl.view_sample_info($event,$index)">View This Sample Info</md-button>
+        <md-button flex class="md-raised" ng-click="ctrl.delete_sample_info($index)">Delete This Sample Info</md-button>
+      </div>
+    </div>
+
+    <div layout='column' ng-repeat = "compound_info in ctrl.parameters.compound_infos">
+
+      <div layout='row'>
+        <h4 flex>Compound Info{{$index}}</h4>
+        <md-input-container class="md-block" flex='50'>
+              <label>Columns Attaching</label>
+              <md-select ng-model="compound_info.column" multiple>
+                <md-option ng-repeat="column_option in compound_info.column_options" value="{{column_option}}">
+                  {{column_option}}
+                </md-option>
+              </md-select>
+        </md-input-container>
+        <md-button flex class="md-raised" ng-click="ctrl.view_compound_info($event,$index)">View This Compound Info</md-button>
+        <md-button flex class="md-raised" ng-click="ctrl.delete_compound_info($index)">Delete This Compound Info</md-button>
+      </div>
+    </div>
+
+    <div layout='row'>
+      <md-button flex class="md-raised" ng-click="ctrl.attach_sample_info('data_attach_add_sample_info')" ng-disabled='ctrl.attach_sample_info_text == "Loading"'>{{ctrl.attach_sample_info_text}}</md-button>
+      <md-button flex class="md-raised" ng-click="ctrl.attach_compound_info('data_attach_add_compound_info')" ng-disabled='ctrl.attach_compound_info_text == "Loading"'>{{ctrl.attach_compound_info_text}}</md-button>
+    </div>
+
+
+    <md-button class="md-raised md-primary" ng-click="ctrl.submit()" ng-disabled='ctrl.submit_button_text == "Attaching"'>{{ctrl.submit_button_text}}</md-button>
+
+
+  </md-card-content>
+</md-card>
+
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Analysis Results.</span>
+      <span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <h3>Result:</h3>
+    <div ng-bind-html="ctrl.report"></div>
+    <p>The result is diaplayed in the following table. You could either download the table by clicking "DOWNLOAD RESULT" button or save the result to the database for later use by clicking "SAVE RESULT TO DATABASE" button.</p>
+
+    <div>
+      <table id='result_datatable' class="display"></table>
+    </div>
+    <md-button class="md-raised md-primary" ng-click="ctrl.enable_editing()" ng-disabled='ctrl.submit_button_text === "Attaching"'>Click to Edit the Column Names Before Saving</md-button>
+    <p ng-if="ctrl.enable_editing_text"><em>Now, please click the name of new attached informations to edit it.</em></p>
+
+<div>
+
+  <md-button class="md-raised md-warn" ng-click="ctrl.download()" ng-disabled='ctrl.submit_button_text === "Attaching"'>{{ctrl.download_button_text}}</md-button>
+<md-button class="md-raised" md-colors="{background:'teal'}" ng-click="ctrl.save_result()" ng-disabled='ctrl.submit_button_text === "Attaching"'>{{ctrl.save_button_text}}</md-button><p style="color:white">.</p>
+
+</div>
+
+  </md-card-content>
+</md-card>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

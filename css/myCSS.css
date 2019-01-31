@@ -1,0 +1,28 @@
+
+ng-md-icon {
+    fill: white;
+    transition: fill 750ms ease-in-out;
+}
+ng-md-icon > svg {
+    transition: width 750ms ease-in-out, height 750ms ease-in-out;
+}
+
+.testclass1{
+    max-height:1000px;
+    height:auto;
+    transition: max-height 0.5s;
+}
+
+.testclass2{
+    max-height:50px;
+    transition: max-height 1s;
+}
+
+.card_content_class_expand{
+    transition: 0.5s;
+}
+
+.card_content_class_collapse{
+    height: 0px;
+    transition: 0.5s;
+}

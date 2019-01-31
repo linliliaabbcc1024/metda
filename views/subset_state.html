@@ -1,0 +1,248 @@
+<div ng-controller = "subsetController as ctrl">
+
+<!--<h1>Dataset Subsetting</h1>
+<p>Subset your samples or/and compounds based on sample/compound criterions you provided.</p>
+
+<h3>Procedure</h3>
+<ul>
+  <li>The dataset is subset to meet all the criterions of samples or/and compounds. See below plot.</li>
+</ul>
+
+<div><img src="img/subset_picture1.png" style='display:block;margin:auto;height:300px'></div>
+<p>As shown in the above picture, the compounds (rows) will be subset based on BOTH blue and brown, while the samples (columns) will be subset based on yellow.</p>
+<ul>
+  <li><code>Criterion column</code> can have <code>type</code> either characters or numbers. If character, all the samples/compounds having these characters will be kept. If number, the samples/compounds between a range of minimum and maximum can be kept.</li>
+</ul>-->
+
+
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Data Subsetting</span>
+      <span class="md-subhead">
+        <div layout='row'>
+          <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('subset')">
+          <md-tooltip md-direction="top">Example Dataset</md-tooltip>
+          <i class="material-icons">explicit</i>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Tutorial">
+            <md-tooltip md-direction="top">Tutorial</md-tooltip>
+            <i class="material-icons">help_outline</i>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('subset')">
+            <md-tooltip md-direction="top">Video Tutorial</md-tooltip>
+            <i class="material-icons">play_circle_filled</i>
+          </md-button>
+        </div>
+      </span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <div layout="row">
+      <div flex='32' class="md-block">
+        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('subset');">{{ctrl.select_data_button_text}}</md-button>
+      </div><div flex="2"></div>
+      <div flex='32' class="md-block">
+        <div layout="column" layout-align="center center">
+          <button id='uploadFiles' type="file" ngf-select="ctrl.load_data_from_input_show = false; ctrl.uploadFiles($file, $invalidFiles);" accept=".xlsx, .csv" ngf-max-size="5MB" class="md-button md-raised md-hue-1" ng-disabled="ctrl.upload_data_button_text == 'uploading'">{{ctrl.upload_data_button_text}}</button>
+        </div>
+      </div><div flex='2'></div>
+      <div flex='32' class="md-block">
+        <md-button class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = true">{{ctrl.input_data_button_text}}</md-button>
+      </div>
+    </div>
+    <div ng-show='ctrl.load_data_from_input_show'>
+      <div layout='row'>
+        <div flex='80'>
+          <md-input-container class="md-block">
+            <label>Copy & Paste here</label>
+            <textarea ng-model="ctrl.dataset_input" rows="5" md-select-on-focus=""  md-detect-hidden='' style='max-height:100px;overflow-y: scroll;white-space:pre;' id='dataset_input'></textarea>
+          </md-input-container>
+        </div>
+        <div flex='20'>
+          <button class="md-button md-raised md-hue-1" ng-click='ctrl.upload_data_from_input()' ng-disabled = "ctrl.upload_data_from_input_text === 'uploading' ">{{ctrl.upload_data_from_input_text}}</button>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <table id='preview_datatable' class="display"></table>
+    </div>
+    <md-divider></md-divider>
+
+
+    <div layout="row" style='overflow-y: scroll;'>
+      <div flex='50'>
+        <h4>subset by samples</h4>
+        <div ng-show="ctrl.parameters.sample_criterions.length === 0">Click <span>&#8853;</span> to add Sample Subsetting Criterion</div>
+        <div layout='column' ng-repeat = "sample_criterion in ctrl.parameters.sample_criterions">
+          <div>
+          <div layout="row">
+            <md-input-container class="md-block" flex>
+                <label>column</label>
+                <md-select ng-model="sample_criterion.column">
+                  <md-option ng-repeat="column_option in ctrl.sample_criterion_options" value="{{column_option}}">
+                    {{column_option}}
+                  </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container class="md-block" flex>
+                <label>type</label>
+                <md-select ng-model="sample_criterion.type">
+                  <md-option value='numeric'>numeric</md-option>
+                  <md-option value='character'>character</md-option>
+                </md-select>
+            </md-input-container>
+          </div>
+          <div layout='row'>
+            <md-input-container flex ng-if="sample_criterion.type=='character'">
+                <label>levels</label>
+                <md-select ng-model="sample_criterion.criterion" multiple = "">
+                  <md-option ng-repeat="level_option in ctrl.sample_level_options[sample_criterion.column]" value="{{level_option}}">
+                    {{level_option}}
+                  </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container class="md-block" flex ng-if="sample_criterion.type=='numeric'">
+                <label>minimum</label>
+                <input ng-model="sample_criterion.criterion[0]" type="number">
+            </md-input-container>
+            <md-input-container class="md-block" flex ng-if="sample_criterion.type=='numeric'">
+                <label>maximum</label>
+                <input ng-model="sample_criterion.criterion[1]" type="number">
+            </md-input-container>
+          </div>
+        </div>
+
+      </div>
+      <div>
+        <md-button class="md-fab md-mini" aria-label="add new sample criterion" style='background: white' ng-click="ctrl.add_sample_criterion()">
+            <md-icon md-font-set="material-icons" style='color:black'>add</md-icon>
+        </md-button>
+        <md-button class="md-fab md-mini" aria-label="remove last sample criterion" style='background: white' ng-show='ctrl.parameters.sample_criterions.length > 0' ng-click="ctrl.remove_sample_criterion()">
+            <md-icon md-font-set="material-icons" style='color:black'>remove</md-icon>
+        </md-button>
+      </div>
+      </div>
+
+
+<div flex='50'>
+        <h4>subset by compounds</h4>
+        <div ng-show="ctrl.parameters.compound_criterions.length === 0">Click <span>&#8853;</span> to add compound Subsetting Criterion</div>
+        <div layout='column' ng-repeat = "compound_criterion in ctrl.parameters.compound_criterions">
+          <div>
+          <div layout="row">
+            <md-input-container class="md-block" flex>
+                <label>column</label>
+                <md-select ng-model="compound_criterion.column">
+                  <md-option ng-repeat="column_option in ctrl.compound_criterion_options" value="{{column_option}}">
+                    {{column_option}}
+                  </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container class="md-block" flex>
+                <label>type</label>
+                <md-select ng-model="compound_criterion.type">
+                  <md-option value='numeric'>numeric</md-option>
+                  <md-option value='character'>character</md-option>
+                </md-select>
+            </md-input-container>
+          </div>
+          <div layout='row'>
+            <md-input-container flex ng-if="compound_criterion.type=='character'">
+                <label>levels</label>
+                <md-select ng-model="compound_criterion.criterion" multiple = "">
+                  <md-option ng-repeat="level_option in ctrl.compound_level_options[compound_criterion.column]" value="{{level_option}}">
+                    {{level_option}}
+                  </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container class="md-block" flex ng-if="compound_criterion.type=='numeric'">
+                <label>minimum</label>
+                <input ng-model="compound_criterion.criterion[0]" type="number">
+            </md-input-container>
+            <md-input-container class="md-block" flex ng-if="compound_criterion.type=='numeric'">
+                <label>maximum</label>
+                <input ng-model="compound_criterion.criterion[1]" type="number">
+            </md-input-container>
+          </div>
+        </div>
+
+      </div>
+            <div>
+        <md-button class="md-fab md-mini" aria-label="add new compound criterion" style='background: white' ng-click="ctrl.add_compound_criterion()">
+            <md-icon md-font-set="material-icons" style='color:black'>add</md-icon>
+        </md-button>
+        <md-button class="md-fab md-mini" aria-label="remove last compound criterion" style='background: white' ng-show='ctrl.parameters.compound_criterions.length > 0' ng-click="ctrl.remove_compound_criterion()">
+            <md-icon md-font-set="material-icons" style='color:black'>remove</md-icon>
+        </md-button>
+      </div>
+      </div>
+
+    </div>
+
+
+
+    <md-button class="md-raised md-primary" ng-click="ctrl.submit()" ng-disabled='ctrl.submit_button_text == "Subsetting"'>{{ctrl.submit_button_text}}</md-button>
+
+
+  </md-card-content>
+</md-card>
+
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Analysis Results.</span>
+      <span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <h3>Result:</h3>
+    <div ng-bind-html="ctrl.report"></div>
+    <p>The result is diaplayed in the following table. You could either download the table by clicking "DOWNLOAD RESULT" button or save the result to the database for later use by clicking "SAVE RESULT TO DATABASE" button.</p>
+
+    <div>
+      <table id='result_datatable' class="display"></table>
+    </div>
+
+
+<md-button class="md-raised md-warn" ng-click="ctrl.download()" ng-disabled='ctrl.submit_button_text === "Subsetting"'>{{ctrl.download_button_text}}</md-button>
+<md-button class="md-raised" md-colors="{background:'teal'}" ng-click="ctrl.save_result()" ng-disabled='ctrl.submit_button_text == "Subsetting"'>{{ctrl.save_button_text}}</md-button>
+<p style="color:white">.</p>
+  </md-card-content>
+</md-card>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

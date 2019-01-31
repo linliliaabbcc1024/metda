@@ -1,0 +1,797 @@
+<div ng-controller = "one_way_boxplot_adminController as ctrl">
+
+
+
+  <div layout="row">
+    <div flex="20" style='overflow:auto; max-height:80%;font-size:60%'>
+      <div layout='column'>
+
+        <md-input-container class="md-block">
+          <label>Marker Outliercolor</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.outliercolor">
+            <md-option ng-repeat='color_palette_option in ctrl.color_palette_options' value="{{color_palette_option.id}}">
+              {{color_palette_option.text}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Marker Outliercolor Alpha</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.outliercolor_alpha" type='number'>
+        </md-input-container>
+
+        <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.outliercolor_user_define" label="outier color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+        <md-input-container class="md-block">
+          <label>Marker Color</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.color">
+            <md-option ng-repeat='color_palette_option in ctrl.color_palette_options' value="{{color_palette_option.id}}">
+              {{color_palette_option.text}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Marker Color Alpha</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.color_alpha" type='number'>
+        </md-input-container>
+
+        <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.color_user_define" label="marker color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+        <md-input-container class="md-block">
+          <label>Marker Line Color</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.line.color">
+            <md-option ng-repeat='color_palette_option in ctrl.color_palette_options' value="{{color_palette_option.id}}">
+              {{color_palette_option.text}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Marker Line Color Alpha</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.line.color_alpha" type='number'>
+        </md-input-container>
+
+        <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.line.color_user_define" label="marker line color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+
+
+
+        <md-input-container class="md-block">
+          <label>Line Color</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.line.color">
+            <md-option ng-repeat='color_palette_option in ctrl.color_palette_options' value="{{color_palette_option.id}}">
+              {{color_palette_option.text}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Line Color Alpha</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.line.color_alpha" type='number'>
+        </md-input-container>
+
+        <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.line.color_user_define" label="line color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+        <md-input-container class="md-block">
+          <label>Fillcolor</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.fillcolor">
+            <md-option ng-repeat='color_palette_option in ctrl.color_palette_options' value="{{color_palette_option.id}}">
+              {{color_palette_option.text}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Fillcolor</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.fillcolor_alpha" type='number' >
+        </md-input-container>
+
+        <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.fillcolor_user_define" label="fillcolor_user_define" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+
+
+        <md-input-container class="md-block">
+          <label>Whiskerwidth</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.whiskerwidth" type='number' >
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Notched</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.notched">
+            <md-option ng-value="true">
+              true
+            </md-option>
+            <md-option ng-value="false">
+              false
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>NotchWidth</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.notchwidth" type='number' ng-disabled = "!ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.notched">
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>boxpoints</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.boxpoints">
+              <md-option value="all">
+                All
+              </md-option>
+              <md-option value="outliers">
+                Outliers
+              </md-option>
+              <md-option value="suspectedoutliers">
+                Suspectedoutliers
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+        <md-input-container class="md-block">
+          <label>boxmean</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.boxmean">
+            <md-option ng-value="true">
+              true
+            </md-option>
+            <md-option value="sd">
+              sd
+            </md-option>
+            <md-option ng-value="false">
+              false
+            </md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-input-container class="md-block">
+          <label>jitter</label>
+          <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.jitter" type='number' ng-disabled="!ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.boxpoints">
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>pointpos</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.pointpos" type='number' ng-disabled="!ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.boxpoints">
+          </md-input-container>
+
+        <md-input-container class="md-block">
+          <label>orientation</label>
+          <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.orientation">
+            <md-option value="v">
+              vertical
+            </md-option>
+            <md-option value="h">
+              horizontal
+            </md-option>
+          </md-select>
+        </md-input-container>
+          <md-input-container class="md-block">
+            <label>Marker symbol</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.symbol">
+              <md-option ng-repeat = "symbol_option in ctrl.symbol_options" value="{{symbol_option.id}}">
+                {{symbol_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Marker Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.size" type='number'  >
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Marker Line Width</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.marker.line.width" type='number' >
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Line Width</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].global.line.width" type='number' >
+          </md-input-container>
+
+
+
+
+
+      </div>
+    </div>
+    <div flex="60">
+      <div layout='column'>
+        <div align='center'>
+          <div id='plot'></div>
+        </div>
+        <div layout='row'>
+          <md-input-container flex>
+            <md-select ng-model="ctrl.one_way_boxplot_styles.selected" placeholder="Select a Style">
+              <md-option ng-value="style_option" ng-repeat="style_option in ctrl.style_options">{{style_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-button flex class="md-raised" ng-click="ctrl.update_style_modal()">Update</md-button>
+          <md-button flex class="md-raised" ng-click="ctrl.create_new_style_modal()">Create New Style</md-button>
+          <md-button flex class="md-raised" ng-click="ctrl.delete_style_modal()">Delete This Style</md-button>
+        </div>
+      </div>
+
+
+    </div>
+    <div flex="20" style='overflow:auto; max-height:80%;font-size:60%;'>
+      <div layout='column'>
+          <md-input-container class="md-block">
+            <label>Width</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.width" type='number'>
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Height</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.height" type='number' >
+          </md-input-container>
+
+
+<!--
+          <md-input-container class="md-block">
+            <label>Font Family</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.font.family">
+              <md-option ng-repeat = "family_option in ctrl.family_options" value="{{family_option.id}}">
+                {{family_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Font Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.font.size" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.font.color" label="font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+-->
+
+
+
+          <md-input-container class="md-block">
+            <label>Title Font Family</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[0].font.family">
+              <md-option ng-repeat = "family_option in ctrl.family_options" value="{{family_option.id}}">
+                {{family_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Title Font Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[0].font.size" type='number'>
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[0].font.color" label="title font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>Title x</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[0].x" type='number'>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Title y</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[0].y" type='number'>
+          </md-input-container>
+
+
+
+          <!--<md-input-container class="md-block">
+            <label>Margin Left</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.margin.l" type='number' >
+          </md-input-container>-->
+          <md-input-container class="md-block">
+            <label>Margin Right</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.margin.r" type='number' >
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Margin Top</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.margin.t" type='number' >
+          </md-input-container>
+          <!--<md-input-container class="md-block">
+            <label>Margin Bottom</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.margin.b" type='number' >
+          </md-input-container>-->
+          <md-input-container class="md-block">
+            <label>Margin Pad</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.margin.pad" type='number' >
+          </md-input-container>
+
+
+
+          <md-input-container class="md-block">
+            <label>Margin autoexpand</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.margin.autoexpand">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.paper_bgcolor" label="paper_bgcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.plot_bgcolor" label="plot_bgcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+
+          <md-input-container class="md-block">
+            <label>Show Legend</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.showlegend">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+          <h3>xaxis</h3>
+          <md-input-container class="md-block">
+            <label>xaxis visuable</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.visiable">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>xaxis zero line</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.zeroline">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.color" label="xaxis color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.title.font.color" label="xaxis title font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>xaxis title font size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.title.font.size" type='number'>
+          </md-input-container>
+
+          <!--<md-input-container class="md-block">
+            <label>xaxis Title x</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.title.x" type='number'>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>xaxis Title y</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.title.y" type='number'>
+          </md-input-container>-->
+
+
+
+
+          <md-input-container class="md-block">
+            <label>Xaxis Ticklen</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.ticklen" type='number' >
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Tickwidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.tickwidth" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.tickcolor" label="xaxis tickcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>Xaxis Tick Font Family</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.tickfont.family">
+              <md-option ng-repeat = "family_option in ctrl.family_options" value="{{family_option.id}}">
+                {{family_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Xaxis Tick Font Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.tickfont.size" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.tickfont.color" label="xaxis title font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+          <md-input-container class="md-block">
+            <label>Xaxis Tick Angle</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.tickangle" type='number' >
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Xaxis showline</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.showline">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.linecolor" label="xaxis linecolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>Xaxis linewidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.linewidth" type='number' >
+          </md-input-container>
+
+
+          <md-input-container class="md-block">
+            <label>Xaxis showgrid</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.showgrid">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.gridcolor" label="xaxis gridcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>xaxis gridwidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.gridwidth" type='number' >
+          </md-input-container>
+
+         <md-input-container class="md-block">
+            <label>xaxis showticklabels</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.showticklabels">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+         <md-input-container class="md-block">
+            <label>xaxis automargin</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.automargin">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+         <md-input-container class="md-block">
+            <label>xaxis side</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.xaxis.side">
+              <md-option value="top">
+                top
+              </md-option>
+              <md-option value="bottom">
+                bottom
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+          <h3>yaxis</h3>
+          <md-input-container class="md-block">
+            <label>yaxis visuable</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.visiable">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.zerolinecolor" label="yaxis zero color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>Yaxis zeroline width</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.zerolinewidth" type='number' >
+          </md-input-container>
+
+
+
+
+
+
+
+
+          <md-input-container class="md-block">
+            <label>yaxis zero line</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.zeroline">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.color" label="yaxis color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+      <md-input-container class="md-block">
+            <label>Yaxis Title Font Family</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.title.font.family">
+              <md-option ng-repeat = "family_option in ctrl.family_options" value="{{family_option.id}}">
+                {{family_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Yaxis Title Font Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.title.font.size" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.title.font.color" label="yaxis title font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+          <!--<md-input-container class="md-block">
+            <label>yaxis Title x</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[2].x" type='number'>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>yaxis Title y</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.annotations[2].y" type='number'>
+          </md-input-container>-->
+
+          <md-input-container class="md-block">
+            <label>Yaxis Ticklen</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.ticklen" type='number' >
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Tickwidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.tickwidth" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.tickcolor" label="yaxis tickcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>Yaxis Tick Font Family</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.tickfont.family">
+              <md-option ng-repeat = "family_option in ctrl.family_options" value="{{family_option.id}}">
+                {{family_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Yaxis Tick Font Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.tickfont.size" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.tickfont.color" label="yaxis title font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+          <md-input-container class="md-block">
+            <label>Yaxis Tick Angle</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.tickangle" type='number' >
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Yaxis showline</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.showline">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.linecolor" label="yaxis linecolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>Yaxis linewidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.linewidth" type='number' >
+          </md-input-container>
+
+
+          <md-input-container class="md-block">
+            <label>Yaxis showgrid</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.showgrid">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.gridcolor" label="yaxis gridcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <md-input-container class="md-block">
+            <label>yaxis gridwidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.gridwidth" type='number' >
+          </md-input-container>
+
+         <md-input-container class="md-block">
+            <label>yaxis showticklabels</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.showticklabels">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+         <md-input-container class="md-block">
+            <label>yaxis automargin</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.automargin">
+              <md-option ng-value="true">
+                true
+              </md-option>
+              <md-option ng-value="false">
+                false
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+         <md-input-container class="md-block">
+            <label>yaxis side</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.yaxis.side">
+              <md-option value="left">
+                left
+              </md-option>
+              <md-option value="right">
+                right
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <h3>legend</h3>
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.bgcolor" label="legend bgcolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.bordercolor" label="legend bordercolor" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+
+         <md-input-container class="md-block">
+            <label>Legend borderwidth</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.borderwidth" type='number' >
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Legend Font Family</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.font.family">
+              <md-option ng-repeat = "family_option in ctrl.family_options" value="{{family_option.id}}">
+                {{family_option.text}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Legend Font Size</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.font.size" type='number' >
+          </md-input-container>
+
+
+          <div md-color-picker ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.font.color" label="legend font color" icon="color_lens" click-outside-to-close='true' open-on-input='true' skip-hide='false'></div>
+
+
+         <md-input-container class="md-block">
+            <label>legend orientation</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.orientation">
+              <md-option value="v">
+                vertical
+              </md-option>
+              <md-option value="h">
+                horizontal
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Legend X</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.x" type='number' >
+          </md-input-container>
+
+
+         <md-input-container class="md-block">
+            <label>legend xanchor</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.xanchor">
+              <md-option value="left">
+                left
+              </md-option>
+              <md-option value="auto">
+                auto
+              </md-option>
+              <md-option value="center">
+                center
+              </md-option>
+              <md-option value="right">
+                right
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Legend Y</label>
+            <input ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.y" type='number' >
+          </md-input-container>
+
+
+         <md-input-container class="md-block">
+            <label>legend yanchor</label>
+            <md-select ng-model="ctrl.one_way_boxplot_styles[ctrl.one_way_boxplot_styles.selected].layout.legend.yanchor">
+              <md-option value="left">
+                left
+              </md-option>
+              <md-option value="auto">
+                auto
+              </md-option>
+              <md-option value="center">
+                center
+              </md-option>
+              <md-option value="right">
+                right
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

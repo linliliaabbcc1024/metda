@@ -1,0 +1,139 @@
+<div ng-controller = "mtic_normalizationController as ctrl">
+
+<!--<h1>mTIC Normalization</h1>
+<p>What is mTIC normalization.</p>
+
+<h3>Basic Requirements</h3>
+<ul>
+  <li>You must have some compounds that are identified metabolites.</li>
+</ul>
+<h3>Algorithem</h3>
+<ul>
+  <li>What is the algorithm of the mTIC.</li>
+</ul>
+
+<div class="warning">
+  <p><strong>Note:</strong> Is there any note for the users?</p>
+</div>
+-->
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+    <span class="md-headline">mTIC Normalization</span>
+          <span class="md-subhead">
+      <div layout='row'>
+        <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('mtic')">
+        <md-tooltip md-direction="top">Example Dataset</md-tooltip>
+        <i class="material-icons">explicit</i>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="Tutorial">
+          <md-tooltip md-direction="top">Tutorial</md-tooltip>
+          <i class="material-icons">help_outline</i>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('mtic')">
+          <md-tooltip md-direction="top">Video Tutorial</md-tooltip>
+          <i class="material-icons">play_circle_filled</i>
+        </md-button>
+      </div>
+    </span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <div layout="row">
+      <md-button class="md-raised md-hue-1" ng-click="mainctrl.toggleLeft()">{{ctrl.select_data_button_text}}</md-button> <p>OR</p>  <button id='uploadFiles' type="file" ngf-select="ctrl.uploadFiles($file, $invalidFiles)" accept=".xlsx, .csv" ngf-max-size="5MB" class="md-button md-raised md-hue-1">{{ctrl.upload_data_button_text}}</button>  <div style="font:smaller"><p style="margin-bottom:0">{{ctrl.f.name}} <span style="color:red">{{ctrl.errFile.name}} {{ctrl.errFile.$error}} {{ctrl.errFile.$errorParam}}</span></p>
+      <md-progress-linear md-mode="determinate" value="{{ctrl.f.progress}}"></md-progress-linear>
+
+    </div><br />
+      <span style="color:red">{{ctrl.errorMsg}}</span>
+      <p>&nbsp;&nbsp;(download&nbsp;<a href="">example data</a>)</p>
+    </div>
+    <div>
+      <table id='preview_datatable' class="display"></table>
+    </div>
+    <md-divider></md-divider>
+    <div layout="row">
+      <md-input-container class="md-block" flex='30'>
+        <label>Known Metabolites Column</label>
+        <md-select name="column" ng-model="ctrl.parameters.column" required="">
+          <md-option ng-repeat="groups_option in ctrl.column_options" value="{{groups_option}}">{{groups_option}}</md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container class="md-block" flex='30'>
+        <label>Known Metabolites Level</label>
+        <md-select name="level" ng-model="ctrl.parameters.level" required="">
+          <md-option ng-repeat="groups_option in ctrl.level_options" value="{{groups_option}}">{{groups_option}}</md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+
+
+
+    <md-button class="md-raised md-primary" ng-click="ctrl.submit()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.submit_button_text}}</md-button>
+
+
+  </md-card-content>
+</md-card>
+
+
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Analysis Results.</span>
+      <span class="md-subhead"><a href=""><i class="fa fa-exclamation-circle"></i></a> Click for more information.</span>
+    </md-card-title-text>
+  </md-card-title>
+
+  <md-card-content>
+    <h3>Result:</h3>
+    <div ng-bind-html="ctrl.report"></div>
+    <p>The result is diaplayed in the following table. You could either download the table by clicking "DOWNLOAD RESULT" button or save the result to the database for later use by clicking "SAVE RESULT TO DATABASE" button.</p>
+
+    <div>
+      <table id='result_datatable' class="display"></table>
+
+
+    </div>
+<br />
+  <h4>What is the following plot about?</h4>
+    <div layout="row">
+      <div flex="50">
+        <div id="before"></div>
+      </div>
+      <div flex="50">
+        <div id="after"></div>
+      </div>
+    </div>
+<md-button class="md-raised md-warn" ng-click="ctrl.download()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.download_button_text}}</md-button>
+<md-button class="md-raised" md-colors="{background:'teal'}" ng-click="ctrl.save_result()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.save_button_text}}</md-button>
+<p style="color:white">.</p>
+  </md-card-content>
+</md-card>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
