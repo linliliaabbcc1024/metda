@@ -38,8 +38,17 @@ function svgString2Image( url, width, height, format, callback ) {
 	image.src = imgsrc;
 }
 
-make_data_ready = function(ooo, id="preview_datatable"){
-                 var dataSet = ooo.data_matrix
+make_data_ready = function(ooo,id="preview_datatable"){
+
+  var nrow = ooo.data_matrix.length
+  var ncol = ooo.data_matrix[0].length
+  var target_nrow = nrow
+  var target_col = ncol
+  var row_indexes = sequence(from=0,to=target_nrow)
+  var col_indexes = sequence(from=0,to=target_col)
+
+                 var dataSet = row_indexes.map(x=>col_indexes.map(y=>ooo.data_matrix[x][y]))
+                 ddd = dataSet
                  if(typeof(preview_DataTable)!=='undefined'){
                    preview_DataTable.destroy();
                    $('#'+id).empty();
@@ -57,6 +66,7 @@ make_data_ready = function(ooo, id="preview_datatable"){
                  ctrl.parameters.e = ooo.e
                  ctrl.parameters.f = ooo.f
                  ctrl.parameters.p = ooo.p
+                 ctrl.parameters.project_id = ooo.project_id
 }
 
 
@@ -2363,7 +2373,7 @@ get_one_way_boxplot_data = function(array,factor,level, shown_level,regexp){
                       $node = tree.create_node($node);
                       tree.edit($node, null, function(node){// check if the node's new name has been taken. If so, delete this node. Otherwise, create a new node, with id 'newname'+Data().
                         $('#project_structure_ibox').children('.ibox-content').addClass('sk-loading');
-                        db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');
+                        db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');
                         db.get(project_id).then(function(doc){
                           var nd = node;
                           var sibling_id = tree.get_node(nd.parent).children
@@ -2384,7 +2394,7 @@ get_one_way_boxplot_data = function(array,factor,level, shown_level,regexp){
                               "icon":"fa fa-folder"
                             })
                             // reload the tree.
-                            var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');db.put(doc).then(function(){$scope.load_tree(project_id);$('#project_structure_ibox').children('.ibox-content').removeClass('sk-loading');});
+                            var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');db.put(doc).then(function(){$scope.load_tree(project_id);$('#project_structure_ibox').children('.ibox-content').removeClass('sk-loading');});
                           }
                         }).catch(function (error) {
                               alert(error)
@@ -2401,7 +2411,7 @@ get_one_way_boxplot_data = function(array,factor,level, shown_level,regexp){
                         tree.edit($node, null, function(node){
                           $('#project_structure_ibox').children('.ibox-content').addClass('sk-loading');
                           var old_node = $node
-                          db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');
+                          db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');
                           db.get(project_id).then(function(doc){
                             var nd = node;
                             var sibling_id = tree.get_node(nd.parent).children
@@ -2445,7 +2455,7 @@ get_one_way_boxplot_data = function(array,factor,level, shown_level,regexp){
                                 "column_class":old_tree_info.column_class,
                                 "column_value":old_tree_info.column_value,
                               })
-                              var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');db.put(doc).then(function(){$scope.load_tree(project_id);$('#project_structure_ibox').children('.ibox-content').removeClass('sk-loading');});
+                              var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/abib');db.put(doc).then(function(){$scope.load_tree(project_id);$('#project_structure_ibox').children('.ibox-content').removeClass('sk-loading');});
                             }
                           }).catch(function (error) {
                                 alert(error)

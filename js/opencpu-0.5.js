@@ -29,7 +29,9 @@ if(!window.jQuery) {
 
   //new Session()
   function Session(loc, key, txt){
-    this.loc = loc;
+    this.loc = loc.replace("http://","https://");
+    console.log("!"+loc)
+
     this.key = key;
     this.txt = txt;
     this.output = txt.split(/\r\n|\r|\n/g);
@@ -39,7 +41,8 @@ if(!window.jQuery) {
     };
 
     this.getLoc = function(){
-      return loc;
+      return loc.replace("http://","https://");
+      console.log("!!"+loc)
     };
 
     this.getFileURL = function(path){
@@ -66,7 +69,7 @@ if(!window.jQuery) {
         name = ".val";
       }
 
-      var url = this.getLoc() + "R/" + name + "/json?digits=10";
+      var url = this.getLoc() + "R/" + name + "/json";
       return $.get(url, data, success);
     };
 
@@ -146,7 +149,8 @@ if(!window.jQuery) {
 
     //ajax call
     var jqxhr = $.ajax(settings).done(function(){
-      var loc = jqxhr.getResponseHeader('Location') || console.log("Location response header missing.");
+      var loc = jqxhr.getResponseHeader('Location').replace("http://","https://") || console.log("Location response header missing.");
+      console.log("!!!"+loc)
       var key = jqxhr.getResponseHeader('X-ocpu-session') || console.log("X-ocpu-session response header missing.");
       var txt = jqxhr.responseText;
 
@@ -416,7 +420,7 @@ if(!window.jQuery) {
       }
 
       if(location.protocol == "https:" && r_path.protocol != "https:"){
-        alert("Page is hosted on HTTPS but using a (non-SSL) HTTP OpenCPU server. This is insecure and most browsers will not allow this.")
+        //alert("Page is hosted on HTTPS but using a (non-SSL) HTTP OpenCPU server. This is insecure and most browsers will not allow this.")
       }
 
       if(r_cors){
@@ -438,7 +442,9 @@ if(!window.jQuery) {
   //exported functions
   ocpu.call = r_fun_call;
   ocpu.rpc = rpc;
-  ocpu.seturl = seturl("http://metda.fiehnlab.ucdavis.edu/ocpu/library/metabox/R");
+  //ocpu.seturl = seturl("http://localhost:5656/ocpu/library/SERRFweb/R");
+  //ocpu.seturl = seturl("https://serrf.fiehnlab.ucdavis.edu/ocpu/library/SERRFweb/R");
+  ocpu.seturl = seturl("https://metda.fiehnlab.ucdavis.edu/ocpu/library/metabox/R");
   console.log(ocpu.seturl)
   //exported constructors
   ocpu.Snippet = Snippet;
