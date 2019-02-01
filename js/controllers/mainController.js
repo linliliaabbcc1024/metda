@@ -19,7 +19,7 @@ angular
         $scope.submit_message = function(txt){
           console.log(txt)
           $scope.submit_text= "Submitting..."
-          var db_message = PouchDB("http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/message")
+          var db_message = PouchDB("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/message")
           db_message.get('message').then(function(doc){
             var time_stamp = get_time_string()
             doc.message.push({
@@ -71,7 +71,7 @@ angular
         $scope.submit = function(){
           $scope.submit_text = "Submitting"
           //!!!!!!  need to write code to put users email address.
-          var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+          var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
           db.get(mainctrl.user).then(function(doc){
             ddd = doc
             doc.email = $scope.email
@@ -100,7 +100,7 @@ angular
 
 
       mainctrl.user = localStorage.getItem("user")
-      var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+      var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
       db.get(mainctrl.user).catch(function(err){
         console.log(err)
         if(err.error=='not_found'){
@@ -1266,7 +1266,7 @@ angular
 "one_way_boxplot_selected":"classic",
 "projects":[]
           };
-          var db_user = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+          var db_user = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
           db_user.put(new_user).then(function(){
             localStorage.setItem("user",user_id)
 
@@ -1671,7 +1671,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             tree.edit($node, null, function(node){
                               nnn = node
                               console.log("trying to rename.")
-                              var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+                              var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                               db_project.get(mainctrl.activated_project_id).then(function(doc){
                                 ppp = doc
                                 old_node = JSON.parse(JSON.stringify(node));
@@ -1715,7 +1715,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             var r = confirm("Are you sure you want to remove '"+bbb.reference[0].innerText+"' and all its children files?");
                             if(r){
                               var selected_node_id = bbb.reference[0].id.substring(0, bbb.reference[0].id.length - '_anchor'.length);
-                              var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+                              var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                               db_project.get(mainctrl.activated_project_id).then(function(doc){
                                 ppp = doc
                                 var remove_index = [];
@@ -1798,7 +1798,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                 cfpLoadingBar.complete();
                               })
                             }else if($node.original.attachment_id.indexOf(".csv")!==-1){
-                              Papa.parse("http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"), {
+                              Papa.parse("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"), {
                               	download: true,
                               	complete: function(results) {
                               		rrr = results
@@ -1809,10 +1809,10 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             }else if($node.original.attachment_id.indexOf(".xlsx")!==-1){
                               alert("There should not be xlsx file in your project.")
                               cfpLoadingBar.complete();
-                            }else if($node.original.attachment_id.indexOf(".svg")!==-1){//http://bl.ocks.org/curran/7cf9967028259ea032e8
+                            }else if($node.original.attachment_id.indexOf(".svg")!==-1){//https://bl.ocks.org/curran/7cf9967028259ea032e8
                               var dl = document.createElement("a");
                               document.body.appendChild(dl); // This line makes it work in Firefox.
-                              dl.setAttribute("href", "http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"));
+                              dl.setAttribute("href", "https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"));
                               dl.setAttribute("download", nnn.original.text.substr(nnn.original.text.length - 4) === '.svg'? nnn.original.text : nnn.original.text+".svg");
                               dl.setAttribute("target", "_blank");
                               dl.click();cfpLoadingBar.complete();
@@ -1834,9 +1834,9 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
                             // when user select one_stop, pop a modal similar with the project list asking which analysis pipeline user is going to choose.
                             function one_stop_controller($scope, $mdDialog, $mdColorPalette){
-                              //http://127.0.0.1:5985/project/auto2_1547243264820/Null_statistics_input_1547243278164.csv
+                              //https://127.0.0.1:5985/project/auto2_1547243264820/Null_statistics_input_1547243278164.csv
                               var req = ocpu.call("upload_dataset",{
-                                path:"http://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id
+                                path:"https://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id
                               },function(session){
                                 sessionn = session
                                 session.getObject(function(obj){
@@ -1848,7 +1848,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
                               $scope.select_one_stop_disabled = true
                               $scope.colors = Object.keys($mdColorPalette);
-                              var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+                              var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
                               db.get(mainctrl.user).then(function(user_doc){
                                 uuu = user_doc
                                 $scope.projects = uuu.projects
@@ -1857,7 +1857,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
                               $scope.view_project = function(project){
                                 projectt = project
-                                var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+                                var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                                 db.get(project.id).then(function(project_doc){
                                   project_docc = project_doc
                                   $("#view_project_tree_one_stop").jstree('destroy');
@@ -2133,6 +2133,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       cfpLoadingBar.start();
                       console.log("user selected a right format dataset.")
                       // 2. read attachment. //!!! need a clock here indicating that the file is being downloading.
+
                       var req=ocpu.call("upload_dataset",{
                         path:"http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id,
                         project_id:mainctrl.activated_project_id,
@@ -2164,6 +2165,9 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
 
                       /*Papa.parse("http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
+=======
+                      Papa.parse("https://metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
+>>>>>>> 9ef9124b6d4ba06d983fbec5b43f4a43d5f769e3:js/mainController.js
                       	download: true,
                       	complete: function(results) {
                       		rrr = results;
@@ -2215,7 +2219,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       if(ddd.node.original.attachment_id.substr(ddd.node.original.attachment_id.length - 4) === '.csv'){
                         console.log("user selected a right format dataset.")
                         // 2. read attachment. //!!! need a clock here indicating that the file is being downloading.
-                        Papa.parse("http://metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
+                        Papa.parse("https://metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
                         	download: true,
                         	complete: function(results) {
                         		rrr = results;
@@ -2267,12 +2271,12 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
       mainctrl.toggleLeft = function(componentId = 'right',waiting_user_to_select_data=false, special_function_name='',index_of_data = 1) {
         $("#jstree").jstree("destroy");
         $("#jstree").text("Loading...")
-        var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+        var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
         // try to get the activated project. If there is activated project, extract tree and show it. Otherwise, display the project list as tree.
         db.get(mainctrl.user).then(function(user_doc){
           uuu = user_doc
           if(user_doc.activated_project !== null){
-            var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+            var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
             db_project.get(user_doc.activated_project, {attachments: false}).then(function(project_doc){
               activated_project = project_doc._id
               console.log(activated_project)
@@ -2333,7 +2337,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                    nnn = node
                    aaa = activated_project
                    // add the data as .csv attachment. modify the jstree structure. refresh jstree.
-                  var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+                  var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                   db_project.get(activated_project, {attachments: true}).then(function(project_doc){
                     ppp = project_doc
                     var time_string = get_time_string()
@@ -2519,7 +2523,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
             var new_name = prompt("How would you like to name your new project?");
             if(new_name !== null){
             //check the validity of the new project
-            var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+            var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
             db.get(mainctrl.user).then(function(user_doc){
               if(unpack(user_doc.projects,"name").map(x=>x.toUpperCase()).includes(new_name.toUpperCase())){
                 alert("The name '"+new_name+"' is already taken (case insensitive). Change a new one!")
@@ -2528,7 +2532,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                 var timestamp = currentDate.getTime();
                 var new_project_id = new_name + "_" + timestamp
                 // creat new project.add new project to project document. update user.projects.
-                var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+                var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                 var new_project = {
                   "_id":new_project_id,
                   "name":new_name,
@@ -2566,7 +2570,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
             if(r){
               // delete project from user doc. add deleted project to user doc. delete the view_project_tree
               // !!! check if this is a activated project!!!
-              var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+              var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
               db.get(mainctrl.user).then(function(user_doc){
                 user_doc.projects.splice(unpack(user_doc.projects,"id").indexOf(focused_project.id),1)
                 if(user_doc.deleted_projects===null || user_doc.deleted_projects === undefined){
@@ -2590,7 +2594,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
         $scope.colors = Object.keys($mdColorPalette);
 
-        var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+        var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
         db.get(mainctrl.user).then(function(user_doc){
           uuu = user_doc
           $scope.projects = uuu.projects
@@ -2599,7 +2603,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
         $scope.view_project = function(project){
           focused_project = project
-          var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+          var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
           db.get(project.id).then(function(project_doc){
             $("#view_project_tree").jstree('destroy');
             console.log(project_doc.tree_structure)
@@ -2617,9 +2621,9 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
             console.log("No project is selected yet.")
           }else{
             // make focused_project.id the activated project. update jstree.
-            var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+            var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
             db_project.get(focused_project.id).then(function(project_doc){
-              var db_user = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+              var db_user = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
               db_user.get(mainctrl.user).then(function(user_doc){
                 activated_project = focused_project.id
                 user_doc.activated_project = focused_project.id
@@ -2657,7 +2661,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
       function save_result_to_database($scope, $mdDialog, $mdColorPalette, to_be_saved) {
       $scope.save_button_text = "Save"
       console.log(to_be_saved)
-      var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+      var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
           db_project.get(mainctrl.activated_project_id).then(function(project_doc){
             ppp = project_doc
             $("#tree_for_save").jstree("destroy");
@@ -2682,7 +2686,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
 
           $scope.save_button_text = "Saving"
 
-          var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+          var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
           db_project.get(mainctrl.activated_project_id, {attachments: false}).then(function(project_doc){
 
 

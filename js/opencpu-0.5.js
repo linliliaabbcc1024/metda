@@ -442,8 +442,7 @@ if(!window.jQuery) {
   //exported functions
   ocpu.call = r_fun_call;
   ocpu.rpc = rpc;
-  //ocpu.seturl = seturl("http://localhost:5656/ocpu/library/SERRFweb/R");
-  //ocpu.seturl = seturl("https://serrf.fiehnlab.ucdavis.edu/ocpu/library/SERRFweb/R");
+
   ocpu.seturl = seturl("https://metda.fiehnlab.ucdavis.edu/ocpu/library/metabox/R");
   console.log(ocpu.seturl)
   //exported constructors
