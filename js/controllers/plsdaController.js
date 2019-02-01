@@ -586,15 +586,16 @@ angular
 
       ctrl.submit_perm = function(){
          ctrl.submit_perm_button_text = "Calculating"
-         var req = ocpu.call("plsda_perm",{
-           e:ooo.e,
-           p:ooo.p,
-           f:ooo.f,
-           scale:ctrl.parameters.scale,
-           n_perm:ctrl.parameters.n_perm,
-           column:ctrl.parameters.column,
-           project_id:ctrl.parameters.project_id
-         },function(session2){
+         var parameters = {}
+         parameters.fun_name = "plsda_perm"
+         parameters.e = ooo.e
+         parameters.f = ooo.f
+         parameters.p = ooo.p
+         parameters.scale = ctrl.parameters.scale
+         parameters.n_perm = ctrl.parameters.n_perm
+         parameters.column = ctrl.parameters.column
+         parameters.project_id = ctrl.parameters.project_id
+         var req = ocpu.call("call_fun",{parameters:parameters},function(session2){
            ssss = session2
            session2.getObject(function(obj2){
               oooo = obj2

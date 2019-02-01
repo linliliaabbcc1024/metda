@@ -93,7 +93,7 @@ angular
   ctrl.submit = function(){
 
     ctrl.submit_button_text = "Calculating"
-ctrl.parameters.fun_name = "welch_anova_fun"
+    ctrl.parameters.fun_name = "welch_anova_fun"
     var req = ocpu.call("call_fun",{parameters:ctrl.parameters},function(session){
       sss = session
       session.getObject(function(obj){

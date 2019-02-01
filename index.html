@@ -31,7 +31,8 @@
 
    <link rel='stylesheet' href='css/loading-bar.min.css' type='text/css' media='all' />
 
-   <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+   <!--<link href="css/bootstrap-fontawesome.min.css" rel="stylesheet">-->
 
 
 <!--Custome CSS-->
@@ -760,18 +761,6 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 <script type="text/ng-template" id="one_stop_modal.html">
 <md-dialog aria-label="One-Stop Quick Analysis" flex="90">
   <form ng-cloak>
@@ -840,12 +829,38 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                     </div>
                   </div>
 
+
                   <div ng-show="structure.analysis_type == 'fold_change'">
                     <p>Please Specify a Column with Two Groups</p>
                     <div layout="row">
                       <md-input-container class="md-block" flex>
                         <label>Group Column</label>
                         <md-select name="column" ng-model="structure.parameters.column" required="">
+                          <md-option ng-repeat="groups_option in sample_column_options" value="{{groups_option}}">{{groups_option}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex='30'>
+                        <label>Method</label>
+                        <md-select name="method" ng-model="structure.parameters.method" required="">
+                          <md-option ng-repeat="groups_option in structure.fold_change_method_options" value="{{groups_option}}">{{groups_option}}</md-option>
+                        </md-select>
+                      </md-input-container>
+
+                      <md-input-container class="md-block" flex='30'>
+                        <label>Direction</label>
+                        <md-select name="direction" ng-model="structure.parameters.direction" required="">
+                          <md-option ng-repeat="groups_option in structure.fold_change_direction_options" value="{{groups_option.id}}">{{groups_option.text}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+                  </div>
+
+                  <div ng-show="structure.analysis_type == 'fold_change'">
+                    <p>Please Specify a Method</p>
+                    <div layout="row">
+                      <md-input-container class="md-block" flex>
+                        <label>Log Transformation Method</label>
+                        <md-select name="column" ng-model="structure.parameters.method" required="">
                           <md-option ng-repeat="groups_option in sample_column_options" value="{{groups_option}}">{{groups_option}}</md-option>
                         </md-select>
                       </md-input-container>

@@ -134,7 +134,7 @@ angular
 
 
 
-            if(oo.session_id[0].indexOf("replacement has 2 rows, data has 0")!==-1){
+            /*if(oo.session_id[0].indexOf("replacement has 2 rows, data has 0")!==-1){
               console.log("There is no cluster enriched in your dataset. ")
             }else{
               var impace_plot = "http://chemrich.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemrich_impact_plot.pptx"
@@ -147,7 +147,7 @@ angular
               UrltoBase64(result_file, function(the_result_file_base64){
                 result_file_base64 = the_result_file_base64
               })
-            }
+            }*/
 
 
             // !!!! modify how to display the results.
@@ -167,7 +167,7 @@ angular
         var time_stamp = get_time_string()
         // !!!! modify how to download the results.
 
-        var zip = new JSZip();
+        /*var zip = new JSZip();
         for(var i=0;i<Object.keys(plot_url).length;i++){
           zip.file(Object.keys(plot_url)[i]+".svg", Object.values(plot_url)[i], {base64: true});
         }
@@ -175,9 +175,9 @@ angular
         zip.generateAsync({type:"blob"})
         .then(function (blob) {
             saveAs(blob, "ChemRICH - Plots.zip");
-        });
+        });*/
 
-        //download_csv(Papa.unparse(oo.result), "ChemRICH Input.csv")
+        download_csv(Papa.unparse(oo.result), "ChemRICH Input.csv")
       }
 
       ctrl.save_result = function(){
@@ -188,7 +188,7 @@ angular
     to_be_saved_parameters.e = null
     to_be_saved_parameters.f = null
     to_be_saved_parameters.p = null
-        var to_be_saved =
+        /*var to_be_saved =
         [{
           "id":"chemrich_dataset_"+time_stamp,
           "parent":undefined,
@@ -213,8 +213,8 @@ angular
           "attachment_id":"chemrich_node_attributes_"+time_stamp+".xlsx",
           "saving_content":result_file_base64.split("base64,")[1],
           "content_type":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        }]
-        /*var to_be_saved =
+        }]*/
+        var to_be_saved =
         [{
           "id":"chemrich_dataset_"+time_stamp,
           "parent":undefined,
@@ -231,7 +231,7 @@ angular
           "attachment_id":"chemrich_plot_"+time_stamp+".csv",
           "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.result)))),
           "content_type":"application/vnd.ms-excel"
-        }]*/
+        }]
 
         mainctrl.save_result_modal(to_be_saved)
 
