@@ -47,7 +47,7 @@ angular
     ctrl.parameters.selected_compound = ctrl.column_options.includes(parameters.one_way_boxplot.selected_compound)?parameters.one_way_boxplot.selected_compound:ctrl.compound_options[0]
     ctrl.parameters.style = parameters.one_way_boxplot.one_way_boxplot_selected
 
-    var plot_style_db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+    var plot_style_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
     plot_style_db.get(mainctrl.user).then(function(doc){
       ddd = doc
       ctrl.style_options = Object.keys(ddd.one_way_boxplot)

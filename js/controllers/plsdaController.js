@@ -138,7 +138,7 @@ angular
           // create a temp project.
           var time_stamp=get_time_string()
           ctrl.upload_data_button_text = 'uploading'
-          var db_project = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+          var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                 var new_project = {
                   "_id":"temp_project" + time_stamp,
                   "name":"temp_project",

@@ -44,7 +44,7 @@ angular
     xxx = index
     function view_sample_infoController($scope, $mdDialog, dataSet, node_id) {
       ddd = dataSet
-      var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+      var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
       db.get(mainctrl.activated_project_id).then(function(project_doc){
         $("#view_sample_info_tree").jstree('destroy');
         var node_index = unpack(project_doc.tree_structure,"id").indexOf(node_id)
@@ -113,7 +113,7 @@ angular
     xxx = index
     function view_compound_infoController($scope, $mdDialog, dataSet, node_id) {
       ddd = dataSet
-      var db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+      var db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
       db.get(mainctrl.activated_project_id).then(function(project_doc){
         $("#view_compound_info_tree").jstree('destroy');
         var node_index = unpack(project_doc.tree_structure,"id").indexOf(node_id)

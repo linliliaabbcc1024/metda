@@ -80,7 +80,7 @@ angular
 
 
 
-      var plot_style_db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
+      var plot_style_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
       plot_style_db.get("one_way_boxplot").then(function(doc){
         ddd = doc
 
@@ -93,7 +93,7 @@ angular
           ctrl.update_style_modal = function(){
             var c = confirm("Are you sure you want to overwite the style "+ctrl.one_way_boxplot_styles.selected+"?");
             if(c){
-              var plot_style_db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
+              var plot_style_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
               plot_style_db.get("one_way_boxplot").then(function(doc){
                 doc.selected = ctrl.one_way_boxplot_styles.selected
                 doc.style[doc.selected] = ctrl.one_way_boxplot_styles[doc.selected]
@@ -113,7 +113,7 @@ angular
             if(new_name === null){
               console.log("Canceled.")
             }else{
-              var plot_style_db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
+              var plot_style_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
               plot_style_db.get("one_way_boxplot").then(function(doc){
                 if(Object.keys(ddd.style).includes(new_name)){
                   alert("The name "+new_name+ " is taken.")
@@ -133,7 +133,7 @@ angular
           ctrl.delete_style_modal = function(){
             var c = confirm("Are you sure to delete "+ctrl.one_way_boxplot_styles.selected+"?");
             if(c){
-              var plot_style_db = new PouchDB('http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
+              var plot_style_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/plot_styles');
               plot_style_db.get("one_way_boxplot").then(function(doc){
                 doc.selected = ctrl.one_way_boxplot_styles.selected
                 delete doc.style[doc.selected]
