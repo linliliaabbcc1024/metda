@@ -590,7 +590,6 @@ function groupData(labels, values) {
 pair_score_plot = function(scores,variance, color_by, shape_by, color_option, shape_option, color_levels, shape_levels, labels, scatter_size){
 
 
-
     if(shape_by.filter(unique)[0]===undefined){
       var shape_by = Array(shape_by.length).fill("")
       var shape_levels = [""]
@@ -964,12 +963,12 @@ score_plot = function(x,y,xlab, ylab, variance, color_by, shape_by, color_option
        aaa = ellipse_group_x[ellipse_group_type]
        bbb = ellipse_group_y[ellipse_group_type]*/
        var ellipse_dta = ellipse(ellipse_group_x[ellipse_group_type],ellipse_group_y[ellipse_group_type]);
-
-
-       min_x_ellipse = jStat.min([min_x_ellipse,jStat.min(ellipse_dta[0])])
-       max_x_ellipse = jStat.max([max_x_ellipse,jStat.max(ellipse_dta[0])])
-       min_y_ellipse = jStat.min([min_y_ellipse,jStat.min(ellipse_dta[0])])
-       max_y_ellipse = jStat.max([min_y_ellipse,jStat.max(ellipse_dta[0])])
+       eeeeee = ellipse_dta
+       if(eeeeee.x !== null){
+        min_x_ellipse = jStat.min([min_x_ellipse,jStat.min(ellipse_dta[0])])
+        max_x_ellipse = jStat.max([max_x_ellipse,jStat.max(ellipse_dta[0])])
+        min_y_ellipse = jStat.min([min_y_ellipse,jStat.min(ellipse_dta[0])])
+        max_y_ellipse = jStat.max([min_y_ellipse,jStat.max(ellipse_dta[0])])
 
 
        data.push({
@@ -992,6 +991,8 @@ score_plot = function(x,y,xlab, ylab, variance, color_by, shape_by, color_option
          yaxis:"y",
          hoverinfo:"skip"
        })
+       }
+       
      }
 
     // data
