@@ -1798,7 +1798,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                 cfpLoadingBar.complete();
                               })
                             }else if($node.original.attachment_id.indexOf(".csv")!==-1){
-                              Papa.parse("http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"), {
+                              Papa.parse("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"), {
                               	download: true,
                               	complete: function(results) {
                               		rrr = results
@@ -1809,10 +1809,10 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             }else if($node.original.attachment_id.indexOf(".xlsx")!==-1){
                               alert("There should not be xlsx file in your project.")
                               cfpLoadingBar.complete();
-                            }else if($node.original.attachment_id.indexOf(".svg")!==-1){//http://bl.ocks.org/curran/7cf9967028259ea032e8
+                            }else if($node.original.attachment_id.indexOf(".svg")!==-1){//https://bl.ocks.org/curran/7cf9967028259ea032e8
                               var dl = document.createElement("a");
                               document.body.appendChild(dl); // This line makes it work in Firefox.
-                              dl.setAttribute("href", "http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"));
+                              dl.setAttribute("href", "https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+$node.original.attachment_id.replace('+',"%2B"));
                               dl.setAttribute("download", nnn.original.text.substr(nnn.original.text.length - 4) === '.svg'? nnn.original.text : nnn.original.text+".svg");
                               dl.setAttribute("target", "_blank");
                               dl.click();cfpLoadingBar.complete();
@@ -1831,9 +1831,9 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             objj = obj
                             // when user select one_stop, pop a modal similar with the project list asking which analysis pipeline user is going to choose.
                             function one_stop_controller($scope, $mdDialog, $mdColorPalette){
-                              //http://127.0.0.1:5985/project/auto2_1547243264820/Null_statistics_input_1547243278164.csv
+                              //https://127.0.0.1:5985/project/auto2_1547243264820/Null_statistics_input_1547243278164.csv
                               var req = ocpu.call("upload_dataset",{
-                                path:"http://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id
+                                path:"https://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id
                               },function(session){
                                 sessionn = session
                                 session.getObject(function(obj){
@@ -2117,7 +2117,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                     ctrl.data_source = data.node
                     console.log("User is trying to select a dataset from the database.")
                     // 1. check if the user selected the right format
-                    if(['subset','pca','mann_whitney_u_test','student_t_test','welch_t_test','paired_t_test','wilcoxon_signed_rank_test','anova','fdr_correction','welch_anova','kruskal_wallis_test','repeated_anova','friedman_test','two_way_anova','two_way_mixed_anova','jonckheere_terpstra_test','simple_linear_regression','shapiro_wilk_test','fold_change','data_attach','one_way_boxplot','metamapp','chemrich','log_transformation','plsda','QRILC','rm_0_sd','power_transformation','boxcox_transformation','outlier_treatment','group_average','correlation','partial_correlation','heatmap','RFmiss','kNNmiss','SVDmiss','constImp','mTIC','sum_normalization','median_normalization','PQN_normalization','quantile_normalization','linear_normalization','liwong_normalization','cubic_normalization','batchratio_normalization','serrf_normalization','loess_normalization','volcano_plot'].includes(mainctrl.the_waiting_module)){ // this modules requires csv type file.
+                    if(['subset','pca','mann_whitney_u_test','student_t_test','welch_t_test','paired_t_test','wilcoxon_signed_rank_test','anova','fdr_correction','welch_anova','kruskal_wallis_test','repeated_anova','friedman_test','two_way_anova','two_way_mixed_anova','jonckheere_terpstra_test','simple_linear_regression','logistic_regression','shapiro_wilk_test','fold_change','data_attach','one_way_boxplot','idexchanger','metamapp','chemrich','log_transformation','plsda','QRILC','rm_0_sd','power_transformation','boxcox_transformation','outlier_treatment','group_average','correlation','partial_correlation','heatmap','RFmiss','kNNmiss','SVDmiss','constImp','mTIC','sum_normalization','median_normalization','PQN_normalization','quantile_normalization','linear_normalization','liwong_normalization','cubic_normalization','batchratio_normalization','serrf_normalization','loess_normalization','volcano_plot'].includes(mainctrl.the_waiting_module)){ // this modules requires csv type file.
                     if(ddd.node.original.attachment_id === undefined){
                       console.log("User clicked a node with attachment_id undefined.")
                       return;
@@ -2127,7 +2127,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       console.log("user selected a right format dataset.")
                       // 2. read attachment. //!!! need a clock here indicating that the file is being downloading.
                       var req=ocpu.call("upload_dataset",{
-                        path:"http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id,
+                        path:"https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id,
                         project_id:mainctrl.activated_project_id,
                         module:mainctrl.the_waiting_module
                       },function(session){
@@ -2156,7 +2156,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       })
 
 
-                      /*Papa.parse("http://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
+                      /*Papa.parse("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
                       	download: true,
                       	complete: function(results) {
                       		rrr = results;
@@ -2208,7 +2208,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       if(ddd.node.original.attachment_id.substr(ddd.node.original.attachment_id.length - 4) === '.csv'){
                         console.log("user selected a right format dataset.")
                         // 2. read attachment. //!!! need a clock here indicating that the file is being downloading.
-                        Papa.parse("http://metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
+                        Papa.parse("https://metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
                         	download: true,
                         	complete: function(results) {
                         		rrr = results;

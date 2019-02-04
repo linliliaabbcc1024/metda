@@ -1,7 +1,7 @@
-<div ng-controller = "two_way_anovaController as ctrl">
+<div ng-controller = "logistic_regressionController as ctrl">
 
-<!--<h1>Two-way ANOVA</h1>
-<p>Two-way ANOVA is the non-parametric alternative test to the independent student t-test.  It is often used to test whether two sample averages are equal or not. </p>
+<!--<h1>Logistic Regression</h1>
+<p>Logistic Regression is the non-parametric alternative test to the independent student t-test.  It is often used to test whether two sample averages are equal or not. </p>
 
 
 <h3>Assumptions</h3>
@@ -13,16 +13,16 @@
 
 
 <div class="warning">
-  <p><strong>Note:</strong> Two-way ANOVA is robust to outliers.</p>
+  <p><strong>Note:</strong> Logistic Regression is robust to outliers.</p>
 </div>-->
 
 <md-card>
   <md-card-title>
     <md-card-title-text>
-    <span class="md-headline">Two-way ANOVA</span>
+    <span class="md-headline">Logistic Regression</span>
           <span class="md-subhead">
       <div layout='row'>
-        <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('two_way_anova')">
+        <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('logistic_regression')">
         <md-tooltip md-direction="top">Example Dataset</md-tooltip>
         <i class="material-icons">explicit</i>
         </md-button>
@@ -30,7 +30,7 @@
           <md-tooltip md-direction="top">Tutorial</md-tooltip>
           <i class="material-icons">help_outline</i>
         </md-button>
-        <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('two_way_anova')">
+        <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('logistic_regression')">
           <md-tooltip md-direction="top">Video Tutorial</md-tooltip>
           <i class="material-icons">play_circle_filled</i>
         </md-button>
@@ -42,7 +42,7 @@
   <md-card-content>
     <div layout="row">
       <div flex='32' class="md-block">
-        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('two_way_anova');">{{ctrl.select_data_button_text}}</md-button>
+        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('logistic_regression');">{{ctrl.select_data_button_text}}</md-button>
       </div><div flex="2"></div>
       <div flex='32' class="md-block">
         <div layout="column" layout-align="center center">
@@ -62,20 +62,34 @@
         <div flex='20'>
           <button class="md-button md-raised md-hue-1" ng-click='ctrl.upload_data_from_input()' ng-disabled = "ctrl.upload_data_from_input_text === 'uploading' ">{{ctrl.upload_data_from_input_text}}</button>
         </div>
+
       </div>
+
     </div>
+
+
     <div>
+
       <table id='preview_datatable' class="display"></table>
     </div>
     <md-divider></md-divider>
     <div layout='rows'>
         <md-input-container class="md-block" flex>
-            <label>Group Columns</label>
-            <md-select ng-model="ctrl.parameters.columns" multiple=''>
+            <label>column</label>
+            <md-select ng-model="ctrl.parameters.column">
               <md-option ng-repeat="column_option in ctrl.column_options" value="{{column_option}}">
                 {{column_option}}
               </md-option>
             </md-select>
+        </md-input-container>
+        <md-input-container class="md-block" flex>
+            <label>confounders</label>
+            <md-select ng-model="ctrl.parameters.confounder" multiple="">
+              <md-option ng-repeat="confounder_option in ctrl.confounder_options" value="{{confounder_option}}">
+                {{confounder_option}}
+              </md-option>
+            </md-select>
+            <p ng-show="ctrl.parameters.confounder.length>2 && ctrl.parameters.confounder.includes('NO_CONFOUNDER')"><em>Uncheck "NO_CONFOUNDER" if you have confounder.</em></p>
         </md-input-container>
        <md-input-container class="md-block" flex>
         <label>False Discovery Rate Correction</label>
@@ -120,7 +134,6 @@
 
 
 </div>
-
 
 
 

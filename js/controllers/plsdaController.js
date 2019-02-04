@@ -131,45 +131,42 @@ angular
       }
 
       ctrl.uploadFiles = function(file, errFiles) {
+        ctrl.upload_data_button_text = 'uploading'
+        // when user simply upload a dataset,create a temp project.
+        var project_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+        var time_stamp = get_time_string()
+        var temp_project_id = "temp"+time_stamp
+        var new_project = {
+          _id:temp_project_id
+        }
+        project_db.put(new_project).then(function(doc){
           ctrl.f = file;
           ctrl.errFile = errFiles && errFiles[0];
           if (file) {
             console.log(file)
-          // create a temp project.
-          var time_stamp=get_time_string()
-          ctrl.upload_data_button_text = 'uploading'
-          var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
-                var new_project = {
-                  "_id":"temp_project" + time_stamp,
-                  "name":"temp_project",
-                  "tree_structure":[],
-                  "analysis_type":"temp_project"
-                }
-          db_project.put(new_project).then(function(){
              var req=ocpu.call("upload_dataset",{
                path:file,
-               project_id:"temp_project" + time_stamp
+               project_id:temp_project_id
              },function(session){
                sss = session
                session.getObject(function(obj){
                  ctrl.data_source = null
                  ooo = obj
                  ctrl.make_data_read_here(obj)
-                 ctrl.upload_data_button_text = "Upload A Dataset"
                  $scope.$apply();
                })
              }).done(function(){
                $scope.$apply(function(){file.progress = 100;})
              }).fail(function(){
-               ctrl.upload_data_button_text = "Upload A Dataset"
                alert("Error: " + req.responseText)
-               $scope.$apply();
-             })
-          })
-
-
+             }).always(function(){
+               ctrl.upload_data_button_text = "Upload A Dataset"
+             });
 
           }
+        })
+
+
       }
 
 

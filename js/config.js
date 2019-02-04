@@ -209,6 +209,12 @@ function config($mdIconProvider, $mdThemingProvider, $stateProvider,cfpLoadingBa
             pageTitle:'Simple Linear Regression'
           }
         })
+        .state('logistic_regression_state',{
+          templateUrl:"views/logistic_regression_state.html",
+          data:{
+            pageTitle:'Logistic Regression'
+          }
+        })
         .state('two_way_anova_state',{
           templateUrl:"views/two_way_anova_state.html",
           data:{
@@ -267,6 +273,12 @@ function config($mdIconProvider, $mdThemingProvider, $stateProvider,cfpLoadingBa
           templateUrl:"views/metamapp_state.html",
           data:{
             pageTitle:"MetaMapp Pathway Mapping"
+            }
+        })
+        .state("idexchanger_state",{
+          templateUrl:"views/idexchanger_state.html",
+          data:{
+            pageTitle:"ID Exchanger"
             }
         })
         .state("chemrich_state",{

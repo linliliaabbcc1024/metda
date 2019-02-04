@@ -1,5 +1,5 @@
 angular
-.module('blankapp').controller("mTICController", function($scope, $rootScope, $timeout, $mdToast){
+.module('blankapp').controller("logistic_regressionController", function($scope, $rootScope, $timeout, $mdToast){
   ctrl = this;
   MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
@@ -13,25 +13,31 @@ angular
   ctrl.input_data_button_text = "Upload A Dataset By Copy & Paste"
   ctrl.load_data_from_input_show = false
   ctrl.data_source = null
-
-  // !!!! add other ctrl initials.
+  ctrl.FDR_options = FDR_options
 
   var parameters;
   ctrl.make_data_read_here = function(obj){
     make_data_ready(obj)
-    parameters = JSON.parse(localStorage.getItem('parameters'))
-    ctrl.column_options = delete_element_from_array(Object.keys(ooo.f[0]),'label')
-    ctrl.parameters.known_column = ctrl.column_options.includes(parameters.mTIC.known_column)?parameters.mTIC.known_column:ctrl.column_options[0]
-    // !!!! make all the parameters ready here.
-    $scope.$watch("ctrl.parameters.known_column",function(newValue, oldValue){
-      ctrl.level_options = unpack(ooo.f,ctrl.parameters.known_column).filter(unique)
-      ctrl.parameters.known_level = ctrl.level_options.includes(parameters.mTIC.known_level)?parameters.mTIC.known_level:[ctrl.level_options[0]]
-    },true)
+    parameters = JSON.parse(localStorage.getItem('parameters'));
+    ctrl.parameters.scale = 'standard'
+    ctrl.parameters.FDR = parameters.FDR
+    ctrl.column_options = delete_element_from_array(Object.keys(ooo.p[0]),'label')
+    ctrl.parameters.column = ctrl.column_options.includes(parameters.column)?parameters.column:ctrl.column_options[0]
+    ctrl.confounder_options = ["NO_CONFOUNDER"].concat(delete_element_from_array(Object.keys(ooo.p[0]),'label'))
+    ctrl.parameters.confounder = parameters.confounder.map(x => ctrl.confounder_options.includes(x)).every(x=>x===true)?parameters.confounder:["NO_CONFOUNDER"]
+
+
+
+    ctrl.confounder_options.includes(parameters.confounder)?parameters.confounder:ctrl.confounder_options[0]
+
     $scope.$watch("ctrl.parameters",function(newValue, oldValue){
-      parameters.mTIC.known_column = ctrl.parameters.known_column
-      parameters.mTIC.known_level = ctrl.parameters.known_level
+      parameters.FDR = ctrl.parameters.FDR
+      parameters.column = ctrl.parameters.column
+      parameters.confounder = ctrl.parameters.confounder
       localStorage.setItem('parameters', JSON.stringify(parameters));
     },true)
+
+
   }
 
   ctrl.upload_data_from_input = function(){
@@ -61,67 +67,54 @@ angular
   }
 
 
- ctrl.uploadFiles = function(file, errFiles) {
-        ctrl.upload_data_button_text = 'uploading'
-        // when user simply upload a dataset,create a temp project.
-        var project_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
-        var time_stamp = get_time_string()
-        var temp_project_id = "temp"+time_stamp
-        var new_project = {
-          _id:temp_project_id
-        }
-        project_db.put(new_project).then(function(doc){
-          ctrl.f = file;
-          ctrl.errFile = errFiles && errFiles[0];
-          if (file) {
-            console.log(file)
-             var req=ocpu.call("upload_dataset",{
-               path:file,
-               project_id:temp_project_id
-             },function(session){
-               sss = session
-               session.getObject(function(obj){
-                 ctrl.data_source = null
-                 ooo = obj
-                 ctrl.make_data_read_here(obj)
-                 $scope.$apply();
-               })
-             }).done(function(){
-               $scope.$apply(function(){file.progress = 100;})
-             }).fail(function(){
-               alert("Error: " + req.responseText)
-             }).always(function(){
-               ctrl.upload_data_button_text = "Upload A Dataset"
-             });
-
-          }
+  ctrl.uploadFiles = function(file, errFiles) {
+    ctrl.f = file;
+    ctrl.errFile = errFiles && errFiles[0];
+    if (file) {
+      ctrl.upload_data_button_text = 'uploading'
+      console.log(file)
+      var req=ocpu.call("upload_dataset",{
+        path:file
+      },function(session){
+        sss = session
+        session.getObject(function(obj){
+          ctrl.data_source = null
+          ooo = obj
+          ctrl.make_data_read_here(obj)
+          $scope.$apply();
         })
+      }).done(function(){
+        $scope.$apply(function(){file.progress = 100;})
+      }).fail(function(){
+        alert("Error: " + req.responseText)
+      }).always(function(){
+        ctrl.upload_data_button_text = "Upload A Dataset"
+      });
 
+    }
+  }
 
-      }
 
 
   ctrl.submit = function(){
+
     ctrl.submit_button_text = "Calculating"
-ctrl.parameters.fun_name = "mTIC_fun"
+    ctrl.parameters.fun_name = "logistic_regression_fun"
     var req = ocpu.call("call_fun",{parameters:ctrl.parameters},function(session){
       sss = session
       session.getObject(function(obj){
         oo = obj
         ctrl.report = oo.report_html[0]
 
-        // !!!! modify how to display the results.
-
-        var dataSet = oo.data_matrix
+        var dataSet = oo.result.map(x => Object.values(x))
         if(typeof(result_DataTable)!=='undefined'){
           result_DataTable.destroy();
-          $('#'+'result_datatable').empty();
         }
         result_DataTable = $('#result_datatable').DataTable({
           data: dataSet,
-          columns: oo.data_matrix[0].map(function(x, index){return {title:""}}),
-          "ordering": false,
-          "scrollX": true,
+          columns: Object.keys(oo.result[0]).map(function(x){return({title:x})}),
+          "ordering": true,
+          "scrollX": false,
           "lengthMenu": [[15, 25, 50, -1], [15, 25, 50, "All"]]
         });
         $scope.$apply();
@@ -147,44 +140,43 @@ ctrl.parameters.fun_name = "mTIC_fun"
 
     zip.generateAsync({type:"blob"})
     .then(function (blob) {
-      saveAs(blob, "mTIC Normalization - Plots.zip");
+      saveAs(blob, "Logistic Regression - Plots.zip");
     });*/
 
-      download_csv(Papa.unparse(oo.data_matrix), "mTIC Normalization "+time_stamp+".csv")
+      download_csv(Papa.unparse(oo.result), "Logistic Regression"+time_stamp+".csv")
   }
 
   ctrl.save_result = function(){
     // trying to save result. The result must be in a form of [{},{},{}], which is a folder of the tree. In one of the {}, there is a main key indicating that this is the folder node. If the main is not found, then everything will be added to the user clicked node. For all the nodes that are not folder node, must have 'saving_content' and 'content_type' for adding the attachments. Also, these nodes's parent is to be determined by the user click.
-        // !!!! modify what to save in the database.
-        var time_stamp = get_time_string()
+    // !!!! modify what to save in the database.
     to_be_saved_parameters = _.clone(ctrl.parameters)
     to_be_saved_parameters.e = null
     to_be_saved_parameters.f = null
     to_be_saved_parameters.p = null
-        var to_be_saved =
-        [{
-          "id":"mTIC_dataset_"+time_stamp,
+    var time_stamp = get_time_string()
+    var to_be_saved =
+    [{
+          "id":"logistic_regression_result_"+time_stamp,
           "parent":undefined,
-          "text":"mTIC Normalization",
+          "text":"Logistic Regression",
           "icon":"fa fa-folder",
           "main":true,
-          "analysis_type":"mTIC_normalization",
+          "analysis_type":"logistic_regression",
           "parameters":to_be_saved_parameters
         },{
-          "id":"mTIC_dataset_"+time_stamp+".csv",
-          "parent":"mTIC_dataset_"+time_stamp,
-          "text":"mTIC Normalization.csv",
-          "icon":"fa fa-file-excel-o",
-          "attachment_id":"mTIC_dataset_"+time_stamp+".csv",
-          "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.data_matrix)))),
-          "content_type":"application/vnd.ms-excel",
-          "efp":true
-        }]
+    "id":"logistic_regression_result_"+time_stamp+".csv",
+    "parent":"logistic_regression_result_"+time_stamp,
+    "text":"Logistic Regression result.csv",
+    "icon":"fa fa-file-excel-o",
+    "attachment_id":"logistic_regression_dataset_"+time_stamp+".csv",
+    "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.result)))),
+    "content_type":"application/vnd.ms-excel"
+    }]
 
-        mainctrl.save_result_modal(to_be_saved)
+    mainctrl.save_result_modal(to_be_saved)
 
-      }
-	})
+  }
+})
 
 
 

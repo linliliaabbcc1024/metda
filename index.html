@@ -31,9 +31,8 @@
 
    <link rel='stylesheet' href='css/loading-bar.min.css' type='text/css' media='all' />
 
-
-   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-
+     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+   <!--<link href="css/bootstrap-fontawesome.min.css" rel="stylesheet">-->
 
 
 <!--Custome CSS-->
@@ -308,6 +307,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
           <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
           <md-button  md-colors="{background: 'green'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Simple Linear Regression';" ui-sref="simple_linear_regression_state">Simple Linear Regression</md-button>
+          <md-button  md-colors="{background: 'green'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Logistic Regression';" ui-sref="logistic_regression_state">Logistic Regression</md-button>
           <md-button md-colors="{background: 'green'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Correlations';" ui-sref="correlation_state">Correlations</md-button>
           <md-button md-colors="{background: 'green'}" class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'Partial Correlation';" ui-sref="partial_correlation_state">Partial Correlation</md-button>
           <div class="label"><md-tooltip md-direction="top">a measure of the relation between the mean value of one variable (e.g., output) and corresponding values of other variables (e.g., time and cost). </md-tooltip>Regressions</div>
@@ -331,6 +331,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
           </section>
 
           <section layout="row" layout-sm="column" layout-align="left center" layout-wrap="">
+            <md-button md-colors="{background: 'amber'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'ID Exchanger';" ui-sref="idexchanger_state">ID Exchanger</md-button>
             <md-button md-colors="{background: 'amber'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'MetaMapp Pathway Mapping';" ui-sref="metamapp_state">MetaMapp Pathway Mapping</md-button>
             <md-button md-colors="{background: 'amber'}"  class="md-primary md-hue-1" ng-click="mainctrl.tabIndex = 1; mainctrl.module_label = 'ChemRICH';" ui-sref="chemrich_state">ChemRICH</md-button>
             <div class="label"><md-tooltip md-direction="top">Link from statistics to biological interpretations.</md-tooltip>Biological Interpretations</div>
@@ -468,6 +469,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
   <script src="js/controllers/fold_changeController.js"></script>
   <script src="js/controllers/plsdaController.js"></script>
   <script src="js/controllers/simple_linear_regressionController.js"></script>
+  <script src="js/controllers/logistic_regressionController.js"></script>
 
 
   <script src="js/controllers/two_way_anovaController.js"></script>
@@ -495,6 +497,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
    <script src="js/controllers/one_way_boxplot_adminController.js"></script>
 
 
+   <script src="js/controllers/idexchangerController.js"></script>
    <script src="js/controllers/metamappController.js"></script>
 
    <script src="js/controllers/chemrichController.js"></script>
@@ -856,7 +859,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                     </div>
                   </div>
 
-                  <div ng-show="structure.analysis_type == 'fold_change'">
+                  <!--<div ng-show="structure.analysis_type == 'fold_change'">
                     <p>Please Specify a Method</p>
                     <div layout="row">
                       <md-input-container class="md-block" flex>
@@ -879,7 +882,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                         </md-select>
                       </md-input-container>
                     </div>
-                  </div>
+                  </div>-->
 
                   <div ng-show="structure.analysis_type == 'mann_whitney_u_test'">
                     <p>Please Specify a Column with Two Groups</p>

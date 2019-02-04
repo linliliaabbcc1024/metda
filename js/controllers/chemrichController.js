@@ -95,13 +95,22 @@ angular
 
 
       ctrl.uploadFiles = function(file, errFiles) {
+        ctrl.upload_data_button_text = 'uploading'
+        // when user simply upload a dataset,create a temp project.
+        var project_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+        var time_stamp = get_time_string()
+        var temp_project_id = "temp"+time_stamp
+        var new_project = {
+          _id:temp_project_id
+        }
+        project_db.put(new_project).then(function(doc){
           ctrl.f = file;
           ctrl.errFile = errFiles && errFiles[0];
           if (file) {
-            ctrl.upload_data_button_text = 'uploading'
             console.log(file)
              var req=ocpu.call("upload_dataset",{
-               path:file
+               path:file,
+               project_id:temp_project_id
              },function(session){
                sss = session
                session.getObject(function(obj){
@@ -119,6 +128,9 @@ angular
              });
 
           }
+        })
+
+
       }
 
 
@@ -137,8 +149,8 @@ angular
             /*if(oo.session_id[0].indexOf("replacement has 2 rows, data has 0")!==-1){
               console.log("There is no cluster enriched in your dataset. ")
             }else{
-              var impace_plot = "http://chemrich.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemrich_impact_plot.pptx"
-              var result_file = "http://chemrich.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/ChemRICH_results.xlsx"
+              var impace_plot = "https://chemrich.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemrich_impact_plot.pptx"
+              var result_file = "https://chemrich.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/ChemRICH_results.xlsx"
 
               UrltoBase64(impace_plot, function(the_impact_plot_base64){
                 impact_plot_base64 = the_impact_plot_base64

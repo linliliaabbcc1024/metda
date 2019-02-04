@@ -96,14 +96,23 @@ angular
       }
 
 
-      ctrl.uploadFiles = function(file, errFiles) {
+     ctrl.uploadFiles = function(file, errFiles) {
+        ctrl.upload_data_button_text = 'uploading'
+        // when user simply upload a dataset,create a temp project.
+        var project_db = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+        var time_stamp = get_time_string()
+        var temp_project_id = "temp"+time_stamp
+        var new_project = {
+          _id:temp_project_id
+        }
+        project_db.put(new_project).then(function(doc){
           ctrl.f = file;
           ctrl.errFile = errFiles && errFiles[0];
           if (file) {
-            ctrl.upload_data_button_text = 'uploading'
             console.log(file)
              var req=ocpu.call("upload_dataset",{
-               path:file
+               path:file,
+               project_id:temp_project_id
              },function(session){
                sss = session
                session.getObject(function(obj){
@@ -121,6 +130,9 @@ angular
              });
 
           }
+        })
+
+
       }
 
 
@@ -135,8 +147,8 @@ ctrl.parameters.fun_name="metamapp_fun"
             ctrl.report = oo.report_html[0]
 
 
-            /*var chemsim_krp_07_url = "http://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemsim_krp_07.sif"
-            var node_attributes_chemsim_krp_07_url = "http://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/node_attributes_chemsim_krp_07.tsv"
+            /*var chemsim_krp_07_url = "https://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemsim_krp_07.sif"
+            var node_attributes_chemsim_krp_07_url = "https://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/node_attributes_chemsim_krp_07.tsv"
             UrltoBase64(chemsim_krp_07_url, function(base_chemsim_krp_base64){
               chemsim_krp_07_base64 = base_chemsim_krp_base64
             })

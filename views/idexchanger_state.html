@@ -1,28 +1,27 @@
-<div ng-controller = "two_way_anovaController as ctrl">
+<div ng-controller = "idexchangerController as ctrl">
 
-<!--<h1>Two-way ANOVA</h1>
-<p>Two-way ANOVA is the non-parametric alternative test to the independent student t-test.  It is often used to test whether two sample averages are equal or not. </p>
+<!--<h1>idexchanger Pathway Visualization</h1>
+<p></p>
 
 
-<h3>Assumptions</h3>
-<ul>
-  <li>You have one dependent variable (e.g. compound) that is measured at the continuous or ordinal level.</li>
-  <li>You have one independent variable that consists of two categorical, independent groups (i.e., a dichotomous variable, e.g. Male vs Female).</li>
-  <li>You should have independence of samples, which means that there is no relationship between the samples in each group of the independent variable or between the groups themselves.</li>
-</ul>
+<div class='col'>
+  <div class="col-md-12">
+    <div id="illustration">display an illustration figure here.</div>
+  </div>
+</div>
 
 
 <div class="warning">
-  <p><strong>Note:</strong> Two-way ANOVA is robust to outliers.</p>
-</div>-->
-
+  <p><strong>Note:</strong> Is there any warning to the user?</p>
+</div>
+-->
 <md-card>
   <md-card-title>
     <md-card-title-text>
-    <span class="md-headline">Two-way ANOVA</span>
+    <span class="md-headline">ID Exchanger</span>
           <span class="md-subhead">
       <div layout='row'>
-        <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('two_way_anova')">
+        <md-button class="md-icon-button" aria-label="ToggleLeft" ng-click="mainctrl.downloadExampleDataset('idexchanger')">
         <md-tooltip md-direction="top">Example Dataset</md-tooltip>
         <i class="material-icons">explicit</i>
         </md-button>
@@ -30,7 +29,7 @@
           <md-tooltip md-direction="top">Tutorial</md-tooltip>
           <i class="material-icons">help_outline</i>
         </md-button>
-        <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('two_way_anova')">
+        <md-button class="md-icon-button" aria-label="VidioTutorial" ng-click="main.show_tutorial('idexchanger')">
           <md-tooltip md-direction="top">Video Tutorial</md-tooltip>
           <i class="material-icons">play_circle_filled</i>
         </md-button>
@@ -42,7 +41,7 @@
   <md-card-content>
     <div layout="row">
       <div flex='32' class="md-block">
-        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('two_way_anova');">{{ctrl.select_data_button_text}}</md-button>
+        <md-button  class="md-raised md-hue-1" ng-click="ctrl.load_data_from_input_show = false; ctrl.load_data_from_database('idexchanger');">{{ctrl.select_data_button_text}}</md-button>
       </div><div flex="2"></div>
       <div flex='32' class="md-block">
         <div layout="column" layout-align="center center">
@@ -62,31 +61,49 @@
         <div flex='20'>
           <button class="md-button md-raised md-hue-1" ng-click='ctrl.upload_data_from_input()' ng-disabled = "ctrl.upload_data_from_input_text === 'uploading' ">{{ctrl.upload_data_from_input_text}}</button>
         </div>
+
       </div>
+
     </div>
     <div>
       <table id='preview_datatable' class="display"></table>
     </div>
     <md-divider></md-divider>
-    <div layout='rows'>
+    <!--!!!! add parameters here-->
+    <div layout='row'>
         <md-input-container class="md-block" flex>
-            <label>Group Columns</label>
-            <md-select ng-model="ctrl.parameters.columns" multiple=''>
+            <label>From</label>
+            <md-select ng-model="ctrl.parameters.from_column">
               <md-option ng-repeat="column_option in ctrl.column_options" value="{{column_option}}">
                 {{column_option}}
               </md-option>
             </md-select>
         </md-input-container>
-       <md-input-container class="md-block" flex>
-        <label>False Discovery Rate Correction</label>
-        <md-select ng-model="ctrl.parameters.FDR">
-          <md-option ng-repeat = "FDR_option in ctrl.FDR_options" value="{{FDR_option.id}}">{{FDR_option.text}}</md-option>
-        </md-select>
-      </md-input-container>
+        <md-input-container class="md-block" flex>
+            <label>From Type</label>
+            <md-select ng-model="ctrl.parameters.from_type">
+              <md-option ng-repeat="type_option in ctrl.from_type_options" value="{{type_option}}">
+                {{type_option}}
+              </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container class="md-block" flex>
+            <label>To Type</label>
+            <md-select ng-model="ctrl.parameters.to_type" multiple="">
+              <md-option ng-repeat="type_option in ctrl.to_type_options" value="{{type_option}}">
+                {{type_option}}
+              </md-option>
+            </md-select>
+        </md-input-container>
+
+
     </div>
+    <div>
+      <table id='result_datatable' class="display"></table>
+    </div>
+    <!--<div id='cy'>
 
-
-
+    </div>-->
     <md-button class="md-raised md-primary" ng-click="ctrl.submit()" ng-disabled='ctrl.submit_button_text == "Calculating"'>{{ctrl.submit_button_text}}</md-button>
 
 
@@ -107,9 +124,8 @@
     <div ng-bind-html="ctrl.report"></div>
     <p>The result is diaplayed in the following table. You could either download the table by clicking "DOWNLOAD RESULT" button or save the result to the database for later use by clicking "SAVE RESULT TO DATABASE" button.</p>
 
-    <div>
-      <table id='result_datatable' class="display"></table>
-    </div>
+
+    <!--!!!! how to display the result-->
 
 
 <md-button class="md-raised md-warn" ng-click="ctrl.download()" ng-disabled='ctrl.submit_button_text === "Calculating"'>{{ctrl.download_button_text}}</md-button>
