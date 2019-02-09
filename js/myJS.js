@@ -1,4 +1,4 @@
-console.log("2.8.2019")
+console.log("2.8.2019-2")
 sequence = function(from = 0, to = 10){
   var N = to-from;
   var seq = Array.apply(null, {length: N}).map(Function.call, Number);
