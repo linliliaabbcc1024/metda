@@ -1,23 +1,17 @@
 angular
-.module('blankapp').controller("idexchangerController", function($http,$scope,$q, $rootScope, $timeout, $mdToast){
+.module('blankapp').controller("idexchangerController", function($http,$scope,$q, $rootScope, $timeout, $mdToast,cfpLoadingBar){
   ctrl = this;
   MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
-
-$http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(response) {
+$http.get("https://cts.fiehnlab.ucdavis.edu/rest/convert/PubChem%20CID/InChIKey/afdsfdsa5905").then(function(response) {
     console.log(response)
     rrr = response
   })
-
-
-
-  $http.get("https://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/KEGG/QNAYBMKLOCPYGJ-REOHCLBHSA-N").then(function(result){
-                ctrl.batchResults[string][to] = result.data[0].results[0];
-                console.log(result.data[0].results[0])
-              })
-
-
-
+/*$http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(response) {
+    console.log(response)
+    rrr = response
+  })*/
+  
   ctrl.select_data_button_text = "Select A Dataset From Database"
   ctrl.upload_data_button_text = "Upload A Dataset"
   ctrl.use_example_data_button_text = "Use The Example Dataset"
@@ -30,7 +24,7 @@ $http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(resp
   ctrl.data_source = null
 
   // !!!! add other ctrl initials.
-  ctrl.from_type_options = ["PubChem CID",'smiles',"InChIKey","KEGG"]
+  ctrl.from_type_options = ["PubChem CID","InChIKey","KEGG"]
   ctrl.to_type_options = ["PubChem CID",'smiles',"InChIKey","KEGG","Chemical Name"]
 
   var parameters;
@@ -50,9 +44,6 @@ $http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(resp
       localStorage.setItem('parameters', JSON.stringify(parameters));
 
     },true)
-
-
-
 
 
   }
@@ -126,72 +117,32 @@ $http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(resp
 
   ctrl.submit = function(){
     ctrl.submit_button_text = "Calculating"
-
-    dataSet = ooo.f.map(x=>_.pick(x,["label",ctrl.parameters.from_column]))
-
-  /*$http.get("https://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/KEGG/QNAYBMKLOCPYGJ-REOHCLBHSA-N").then(function(response) {
-    console.log(response)
-    rrr = response
-  })*/
-  var promise = $q.all(null);
-    ctrl.batchResults = {}
-    ctrl.loadingTotal = 0
-    ctrl.generation = 0
-    var myGeneration = ctrl.generation;
-    ctrl.queryStrings = unpack(ooo.f,ctrl.parameters.from_column)
-    // https://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/Chemical%20Name/QNAYBMKLOCPYGJ-REOHCLBHSA-N
-    angular.forEach(ctrl.queryStrings,function(string){
-      ctrl.batchResults[string] = {};
-      angular.forEach(ctrl.parameters.to_type, function(to) {
-        ctrl.batchResults[string][to] = {};
-        ctrl.loadingTotal += 1;
-        promise = promise.then(function() {
-          if (ctrl.generation !== myGeneration) {
-            return $q.reject('Request reset');
-            }else{
-              return $http.get("https://cts.fiehnlab.ucdavis.edu/rest/convert/"+ctrl.parameters.from_type+"/"+to+"/"+string).then(function(result){
-                rrr = result
-                if(result.status===200){
-                  ctrl.batchResults[string][to] = result.data[0].results[0];
-                  console.log(result.data[0].results[0])
-                }
-              }).catch(function(err) {
-
-                                        console.error(err);
-                                    });
-            }
-        })
-      })
-    })
-    /*angular.forEach(ooo.f, function(string) {
-                    ctrl.batchResults[string] = {};
-                    angular.forEach(ctrl.parameters.to_type, function(to) {
-                        ctrl.batchResults[string][to] = {};
-                        ctrl.loadingTotal += 1;
-                        promise = promise.then(function() {
-                            if (ctrl.generation !== myGeneration) {
-                                return $q.reject('Request reset');
-                            } else {
-                                return $http.get("https://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/KEGG/QNAYBMKLOCPYGJ-REOHCLBHSA-N")
-                                    .then(function(result) {
-                                      console.log(result)
-                                        vm.batchResults[string][to] = result;
-                                        if (vm.generation === myGeneration) {
-                                            vm.loadingCounter += 1;
-                                        }
-                                    }).catch(function(err) {
-                                        vm.batchResults[string][to] = [];
-                                        vm.errors.push(err);
-                                        console.error(err);
-                                    });
-                            }
-                        });
-                    });
-                });*/
-
-
-
-    //$scope.$apply(function(){ctrl.submit_button_text = "Calculate"})
+    ctrl.parameters.fun_name = "idexchanger_fun"
+    var req = ocpu.call("call_fun",{parameters:ctrl.parameters},function(session){
+        session.getObject(function(obj){
+            oo = obj
+            ctrl.report = oo.report_html[0]
+            var dataSet = oo.data_matrix
+           if(typeof(result_DataTable)!=='undefined'){
+             result_DataTable.destroy();
+             $('#'+'result_datatable').empty();
+           }
+           result_DataTable = $('#result_datatable').DataTable({
+              data: dataSet,
+              columns: oo.data_matrix[0].map(function(x, index){return {title:""}}),
+              "ordering": false,
+              "scrollX": true,
+               "lengthMenu": [[15, 25, 50, -1], [15, 25, 50, "All"]]
+           });
+           $scope.$apply();
+          })
+    }).done(function(){
+          console.log("Calculation done.")
+        }).fail(function(){
+          alert("Error: " + req.responseText)
+        }).always(function(){
+          $scope.$apply(function(){ctrl.submit_button_text = "Calculate"})
+        });
 
   }
 
@@ -210,7 +161,7 @@ $http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(resp
       saveAs(blob, "ID Exchanger - Plots.zip");
     });*/
 
-      download_csv(Papa.unparse(oo.result), "ID Exchanger.csv")
+       download_csv(Papa.unparse(oo.data_matrix), "ID Exchanger.csv")
   }
 
   ctrl.save_result = function(){
@@ -221,33 +172,6 @@ $http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(resp
     to_be_saved_parameters.e = null
     to_be_saved_parameters.f = null
     to_be_saved_parameters.p = null
-       /* var to_be_saved =
-        [{
-          "id":"idexchanger_dataset_"+time_stamp,
-          "parent":undefined,
-          "text":"MetaMapp Pathway Mapping",
-          "icon":"fa fa-folder",
-          "main":true,
-          "analysis_type":"idexchanger",
-          "parameters":to_be_saved_parameters
-        },{
-          "id":"idexchanger_network_"+time_stamp+".sif",
-          "parent":"idexchanger_dataset_"+time_stamp,
-          "text":"MetaMapp Network.sif",
-          "icon":"fa fa-file-code-o",
-          "attachment_id":"idexchanger_network_"+time_stamp+".sif",
-          "saving_content":chemsim_krp_07_base64.split("base64,")[1],
-          "content_type":"application/octet-stream"
-        },{
-          "id":"idexchanger_node_attributes_"+time_stamp+".tsv",
-          "parent":"idexchanger_dataset_"+time_stamp,
-          "text":"MetaMapp Node Attributes.tsv",
-          "icon":"fa fa-file-code-o",
-          "attachment_id":"idexchanger_node_attributes_"+time_stamp+".tsv",
-          "saving_content":node_attributes_chemsim_krp_07_base64.split("base64,")[1],
-          "content_type":"application/octet-stream"
-        }]*/
-
         var to_be_saved =
         [{
           "id":"idexchanger_dataset_"+time_stamp,
@@ -258,13 +182,14 @@ $http.get("https://cts.fiehnlab.ucdavis.edu/rest/fromValues").then(function(resp
           "analysis_type":"idexchanger",
           "parameters":to_be_saved_parameters
         },{
-          "id":"idexchanger_network_input"+time_stamp+".csv",
+          "id":"idexchanger_dataset_"+time_stamp+".csv",
           "parent":"idexchanger_dataset_"+time_stamp,
           "text":"ID Exchanger.csv",
           "icon":"fa fa-file-excel-o",
-          "attachment_id":"idexchanger_network_input"+time_stamp+".csv",
-          "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.result)))),
-          "content_type":"application/vnd.ms-excel"
+          "attachment_id":"idexchanger_dataset_"+time_stamp+".csv",
+          "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.data_matrix)))),
+          "content_type":"application/vnd.ms-excel",
+          "efp":true
         }]
 
         mainctrl.save_result_modal(to_be_saved)

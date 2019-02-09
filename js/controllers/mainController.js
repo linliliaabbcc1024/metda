@@ -1270,6 +1270,7 @@ angular
           db_user.put(new_user).then(function(){
             localStorage.setItem("user",user_id)
 
+
 parameters = {}
 parameters.rm_0_sd = {}
 parameters.rm_0_sd.by_group=false
@@ -1378,6 +1379,11 @@ parameters.metamapp.smiles=undefined
 parameters.metamapp.pvalue=undefined
 parameters.metamapp.foldchange=undefined
 parameters.metamapp.fold_change_critical=1
+
+parameters.idexchanger={}
+parameters.idexchanger.from_column=undefined
+parameters.idexchanger.from_type=undefined
+parameters.idexchanger.to_type=[undefined]
 
 parameters.chemrich={}
 parameters.chemrich.compound_label='label'
@@ -1508,7 +1514,7 @@ showlegend:false
 parameters.volcano_plot["sig + small_fc"] = {
       name:"sig + small_fc",
       marker:{
-        symbol:"circle",
+        symbol:"circle", 
        size:6,
         color:"grey"
       },
@@ -1574,16 +1580,14 @@ parameters.column = undefined
 parameters.groups_dep = undefined
 parameters.id = undefined
 parameters.FDR =  'fdr'
-
-
-
-
+parameters.confounder=['NO_CONFOUNDER']
 
 
 
 
 
 localStorage.setItem('parameters', JSON.stringify(parameters));
+
 
 
             console.log(user_id)
@@ -2129,7 +2133,8 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       var req=ocpu.call("upload_dataset",{
                         path:"https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id,
                         project_id:mainctrl.activated_project_id,
-                        module:mainctrl.the_waiting_module
+                        module:mainctrl.the_waiting_module,
+                        index_of_data:index_of_data
                       },function(session){
                         console.log(session)
                         session.getObject(function(obj){

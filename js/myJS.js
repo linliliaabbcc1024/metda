@@ -1006,8 +1006,6 @@ score_plot = function(x,y,xlab, ylab, variance, color_by, shape_by, color_option
       }else{
         var name = color_levels[color_option.indexOf(grouped_color[group_type][0])] + "<br />" + shape_levels[shape_option.indexOf(grouped_shape[group_type][0])]
       }
-
-
           data.push({
             x:grouped_scores_x[group_type],
             y:grouped_scores_y[group_type],

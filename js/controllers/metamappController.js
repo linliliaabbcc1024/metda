@@ -147,7 +147,7 @@ ctrl.parameters.fun_name="metamapp_fun"
             ctrl.report = oo.report_html[0]
 
 
-            /*var chemsim_krp_07_url = "https://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemsim_krp_07.sif"
+            var chemsim_krp_07_url = "https://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/chemsim_krp_07.sif"
             var node_attributes_chemsim_krp_07_url = "https://metamapp.fiehnlab.ucdavis.edu/" + oo.session_id[0] + "/files/node_attributes_chemsim_krp_07.tsv"
             UrltoBase64(chemsim_krp_07_url, function(base_chemsim_krp_base64){
               chemsim_krp_07_base64 = base_chemsim_krp_base64
@@ -155,7 +155,7 @@ ctrl.parameters.fun_name="metamapp_fun"
 
             UrltoBase64(node_attributes_chemsim_krp_07_url, function(node_attributes_chemsim_krp_base64){
               node_attributes_chemsim_krp_07_base64 = node_attributes_chemsim_krp_base64
-            })*/
+            })
 
 
 /*cy = cytoscape({
@@ -221,7 +221,7 @@ ctrl.parameters.fun_name="metamapp_fun"
         var time_stamp = get_time_string()
         // !!!! modify how to download the results.
 
-        /*var zip = new JSZip();
+        var zip = new JSZip();
         for(var i=0;i<Object.keys(plot_url).length;i++){
           zip.file(Object.keys(plot_url)[i]+".svg", Object.values(plot_url)[i], {base64: true});
         }
@@ -229,9 +229,9 @@ ctrl.parameters.fun_name="metamapp_fun"
         zip.generateAsync({type:"blob"})
         .then(function (blob) {
             saveAs(blob, "MetaMapp Pathway Mapping - Plots.zip");
-        });*/
+        });
 
-        download_csv(Papa.unparse(oo.result), "MetaMapp Pathway Mapping.csv")
+        //download_csv(Papa.unparse(oo.result), "MetaMapp Pathway Mapping.csv")
       }
 
       ctrl.save_result = function(){
@@ -242,7 +242,7 @@ ctrl.parameters.fun_name="metamapp_fun"
     to_be_saved_parameters.e = null
     to_be_saved_parameters.f = null
     to_be_saved_parameters.p = null
-       /* var to_be_saved =
+        var to_be_saved =
         [{
           "id":"metamapp_dataset_"+time_stamp,
           "parent":undefined,
@@ -267,9 +267,9 @@ ctrl.parameters.fun_name="metamapp_fun"
           "attachment_id":"metamapp_node_attributes_"+time_stamp+".tsv",
           "saving_content":node_attributes_chemsim_krp_07_base64.split("base64,")[1],
           "content_type":"application/octet-stream"
-        }]*/
+        }]
 
-        var to_be_saved =
+       /* var to_be_saved =
         [{
           "id":"metamapp_dataset_"+time_stamp,
           "parent":undefined,
@@ -286,7 +286,7 @@ ctrl.parameters.fun_name="metamapp_fun"
           "attachment_id":"metamapp_network_input"+time_stamp+".csv",
           "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.result)))),
           "content_type":"application/vnd.ms-excel"
-        }]
+        }]*/
 
         mainctrl.save_result_modal(to_be_saved)
 
