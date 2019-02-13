@@ -2298,6 +2298,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                         }
                                         $scope.confirm_pipeline = function(){
                                           $scope.confirming = true
+                                          
                                           // go to R and perform these statistical analysis.!!!!!!
                                           // now call function to get the project.
                                          var db_user = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
@@ -2336,7 +2337,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                               })
                                               
                                             })
-                                                        
+                                                  $scope.$apply();      
                                           
                                         }
 
