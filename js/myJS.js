@@ -1,4 +1,4 @@
-console.log("2.8.2019-2")
+console.log("2.12.2019-2")
 
 log_transformation_methods = ['log10',"log2"]
 fold_change_methods = ['median','mean']
