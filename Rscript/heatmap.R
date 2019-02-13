@@ -37,8 +37,10 @@ e = data.matrix(fread(URLencode(paste0("http://metda.fiehnlab.ucdavis.edu/db/pro
 
   e_t = t(e)
   e_scale = scale(e_t, center = !scale=='none', scale = sds)
-
-
+  
+  
+  
+  
   #dendogram data
   if(order_sample == 'dendrogram'){
     hc.col = hclust(dist(t(e_scale)))
@@ -69,7 +71,8 @@ e = data.matrix(fread(URLencode(paste0("http://metda.fiehnlab.ucdavis.edu/db/pro
   hc.col.order = hc.col$order
   hc.row.order = hc.row$order
   result = list(
-    temp_data = t(e_scale[hc.row.order,hc.col.order]),
+    # temp_data = t(e_scale[hc.row.order,hc.col.order]),
+    temp_data = t(e_scale),
     report_html =report_html,
     sx = xx$x$data[[1]]$x,
     sy = xx$x$data[[1]]$y,

@@ -680,7 +680,7 @@ var time_stamp = get_time_string()
           "text":"PLS-DA",
           "icon":"fa fa-folder",
           "main":true,
-          "analysis_type":"pca",
+          "analysis_type":"plsda",
           "parameters":to_be_saved_parameters
         },
         {

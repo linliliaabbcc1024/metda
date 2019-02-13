@@ -141,7 +141,7 @@ var layout = {
       ctrl.input_data_button_text = "Upload A Dataset By Copy & Paste"
       ctrl.load_data_from_input_show = false
       ctrl.data_source = null
-      ctrl.method_options = ['log10',"log2"]
+      ctrl.method_options = log_transformation_methods
 
 
       var parameters;

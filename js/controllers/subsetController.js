@@ -236,7 +236,7 @@ ctrl.parameters.fun_name = "subset_fun"
             saveAs(blob, "mTIC Normalization Results.zip");
         });*/
 
-        download_csv(Papa.unparse(oo.data_matrix), "Subset Dataset "+time_stamp+".csv")
+        download_csv(Papa.unparse(oo.data_matrix), "Subset Dataset.csv")
       }
 
       ctrl.save_result = function(){

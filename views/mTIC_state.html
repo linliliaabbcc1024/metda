@@ -61,7 +61,7 @@
     <!--!!!! add parameters here-->
     <div layout='rows'>
       <md-input-container class="md-block" flex>
-          <label>Known Compounds Indicator</label>
+          <label>Known Compounds Column</label>
           <md-select ng-model="ctrl.parameters.known_column">
             <md-option ng-repeat="column_option in ctrl.column_options" value="{{column_option}}">
               {{column_option}}
@@ -69,7 +69,7 @@
           </md-select>
       </md-input-container>
       <md-input-container class="md-block" flex>
-          <label>Known Compounds Level</label>
+          <label>Which ones are knowns?</label>
           <md-select ng-model="ctrl.parameters.known_level" multiple="">
             <md-option ng-repeat="level_option in ctrl.level_options" value="{{level_option}}">
               {{level_option}}

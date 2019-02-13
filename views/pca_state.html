@@ -198,7 +198,7 @@
 
           <div ng-repeat="color in ctrl.parameters.score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="tos" ng-model="ctrl.parameters.score_plot.ellipse_color" required="" class='md-primary'>
               Add Ellipse According To Colors.
             </md-checkbox>
@@ -222,7 +222,7 @@
             </md-select>
           </md-input-container>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="score_ellipse_shape" ng-model="ctrl.parameters.score_plot.ellipse_shape" required="" class='md-primary'>
               Add Ellipse According To Shapes.
             </md-checkbox>
@@ -255,7 +255,7 @@
               </md-input-container>
             </div>
 
-            <md-input-container class="md-block">
+            <md-input-container class="md-block no_bottom_margin">
               <md-checkbox name="tos" ng-model="ctrl.parameters.score_plot.add_center" required="" class='md-primary'>
                 Add Group Centers.
               </md-checkbox>
@@ -293,7 +293,7 @@
 
           <div ng-repeat="color in ctrl.parameters.loading_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="tos" ng-model="ctrl.parameters.loading_plot.ellipse_color" required="" class='md-primary'>
               Add Ellipse According To Colors.
             </md-checkbox>
@@ -317,7 +317,7 @@
             </md-select>
           </md-input-container>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="ellipse_shape" ng-model="ctrl.parameters.loading_plot.ellipse_shape" required="" class='md-primary'>
               Add Ellipse According To Shapes.
             </md-checkbox>
@@ -351,7 +351,7 @@
               </md-input-container>
             </div>
 
-            <md-input-container class="md-block">
+            <md-input-container class="md-block no_bottom_margin">
               <md-checkbox name="tos" ng-model="ctrl.parameters.loading_plot.add_center" required="" class='md-primary'>
                 Add Group Centers.
               </md-checkbox>

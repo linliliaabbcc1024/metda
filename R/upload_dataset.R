@@ -43,7 +43,8 @@ upload_dataset <- function(path="/Users/silifan/Downloads/Frass\ only\ MetDa.xls
     f = f,
     e = e,
     data_matrix = data_matrix[1:min(nrow(data_matrix),200),1:min(ncol(data_matrix),200)],
-    project_id=project_id
+    project_id=project_id,
+    path = path
   ))
 
   # return(TRUE)

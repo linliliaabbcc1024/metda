@@ -13,7 +13,7 @@ angular
       ctrl.load_data_from_input_show = false
       ctrl.data_source = null
 
-      ctrl.method_options = ['median','mean']
+      ctrl.method_options = fold_change_methods
 
       var parameters;
       ctrl.make_data_read_here = function(obj){

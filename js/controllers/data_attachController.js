@@ -346,11 +346,11 @@ ctrl.uploadFiles = function(file, errFiles) {
           for(var i = 0; i < ctrl.parameters.compound_infos.length; i++){
             ctrl.report = ctrl.report + "<code>"
             ctrl.report = ctrl.report + ctrl.parameters.compound_infos[i].column.join(", ")
-            ctrl.report = ctrl.report + "<em>(from "+ctrl.parameters.compound_infos[0].node_id+")</em></code>"
-          }
+            ctrl.report = ctrl.report + "<em> (from "+ctrl.parameters.compound_infos[0].node_id+")</em></code>"
           if(i!==(ctrl.parameters.compound_infos.length-1)){
              ctrl.report = ctrl.report + ", "
            }
+          }
         }
         ctrl.report = ctrl.report + " were attached to the original dataset.</b>"
         ctrl.submit_button_text = "Attach"

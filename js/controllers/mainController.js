@@ -12,12 +12,16 @@ angular
           //$("#second_tab").html("");
         }
       })*/
+      
+      
+      mainctrl.downloadExampleDataset = function(tutorial_name){
+        window.open("tutorial/"+tutorial_name+"/metda_"+tutorial_name+"_example.xlsx");
+      }
 
       function tutorial_controller($scope, $mdDialog, $mdColorPalette,$sce, tutorial_name) {
         console.log(tutorial_name)
         $scope.submit_text = "Submit"
         $scope.submit_message = function(txt){
-          console.log(txt)
           $scope.submit_text= "Submitting..."
           var db_message = PouchDB("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/message")
           db_message.get('message').then(function(doc){
@@ -43,17 +47,21 @@ angular
           $scope.activated_project_name = mainctrl.activated_project_name
         }else if(tutorial_name == "available_project"){
           $scope.name = "Available Projects Tips"
-          console.log($scope.name)
           $scope.activate_project_gif = false
           $scope.create_project_gif = false
+        }else if(tutorial_name == "subset"){
+          $scope.name = "Data Subset"
+        }else if(tutorial_name == "rm_0_sd"){
+          $scope.name = "Remove Zero Standard Deviation Compounds"
         }
+        
+        
         $scope.cancel = function(){
           $mdDialog.hide();
         }
       }
 
       mainctrl.show_tutorial = function(tutorial_name) {
-        console.log("!")
         $mdDialog.show({
           locals: { tutorial_name:tutorial_name},
           controller: ["$scope","$mdDialog","$mdColorPalette","$sce","tutorial_name",tutorial_controller],
@@ -64,6 +72,41 @@ angular
           clickOutsideToClose:true
         })
       };
+
+
+
+      function video_tutorial_controller($scope, $mdDialog, $mdColorPalette,$sce, video_tutorial_name) {
+        $scope.submit_text = "Submit"
+        
+        console.log(video_tutorial_name == 'rm_0_sd')
+        if(video_tutorial_name == "subset"){
+          $scope.name = "Data Subset"
+        }
+        if(video_tutorial_name == "rm_0_sd"){
+          $scope.name = "Remove Zero Standard Deviation Compounds"
+        }
+        console.log($scope.name)
+        $scope.src = "tutorial/"+video_tutorial_name+"/metda_"+video_tutorial_name+"_tutorial.mov"
+        
+        $scope.cancel = function(){
+          $mdDialog.hide();
+        }
+      }
+
+      mainctrl.show_video_tutorial = function(video_tutorial_name) {
+        $mdDialog.show({
+          locals: { video_tutorial_name:video_tutorial_name},
+          controller: ["$scope","$mdDialog","$mdColorPalette","$sce","video_tutorial_name",video_tutorial_controller],
+          templateUrl: 'video_tutorial.html',
+          parent: angular.element(document.body),preserveScope : true,
+          autoWrap : true,
+          multiple : true,
+          clickOutsideToClose:true
+        })
+      };
+
+
+
 
       function subscribe_controller($scope, $mdDialog, $mdColorPalette,$sce) {
         $scope.showHints = true
@@ -1643,6 +1686,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       }
                       if(!clicked_node.original.efp){
                         one_stoppable = false
+                        editable = false
                       }
 
                       var tree = $("#jstree").jstree(true);
@@ -1676,7 +1720,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                               nnn = node
                               console.log("trying to rename.")
                               var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
-                              db_project.get(mainctrl.activated_project_id).then(function(doc){
+                              db_project.get(mainctrl.activated_project_id, {attachments: false}).then(function(doc){
                                 ppp = doc
                                 old_node = JSON.parse(JSON.stringify(node));
                                 var new_name = node.text;
@@ -1737,8 +1781,8 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                   }
                                 }
                                 for(var i = remove_index.length -1;i>-1;i--){
-                                  if(doc.tree_structure[remove_index[i]].attname !== undefined){ // delete attachment as well
-                                    delete doc._attachments[[doc.tree_structure[remove_index[i]].attname]]
+                                  if(doc.tree_structure[remove_index[i]].attachment_id !== undefined){ // delete attachment as well
+                                    delete doc._attachments[[doc.tree_structure[remove_index[i]].attachment_id]]
                                   }
                                   doc.tree_structure.splice(remove_index[i],1)
                                 }
@@ -1747,7 +1791,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                 })
                               })
                             }else{
-
+                              console.log("remove canceled.")
                             }
 
 
@@ -1837,13 +1881,14 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             function one_stop_controller($scope, $mdDialog, $mdColorPalette){
                               //https://127.0.0.1:5985/project/auto2_1547243264820/Null_statistics_input_1547243278164.csv
                               var req = ocpu.call("upload_dataset",{
-                                path:"https://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id
+                                path:"https://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id.replace('+',"%2B")
                               },function(session){
                                 sessionn = session
                                 session.getObject(function(obj){
                                   ooo = obj
                                 })
                               })
+                              
 
                               $scope.select_one_stop_disabled = true
                               $scope.colors = Object.keys($mdColorPalette);
@@ -1873,7 +1918,23 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                     $scope.select_pipeline= function(){
                                       // pickup all the sample metadata for this dataset.
                                       $scope.sample_column_options = delete_element_from_array(Object.keys(ooo.p[0]),'label')
-                                      $scope.compound_column_options = delete_element_from_array(Object.keys(ooo.p[0]),'label')
+                                      $scope.compound_column_options = delete_element_from_array(Object.keys(ooo.f[0]),'label')
+                                      
+                                      
+                                      $scope.scale_options = scale_options
+                                      var sample_columns = Object.keys(ooo.p[0])
+                                      $scope.sample_column_level_options = {}
+                                      for(var i=0; i< sample_columns.length;i++){
+                                        $scope.sample_column_level_options[sample_columns[i]] = unpack(ooo.p, sample_columns[i]).filter(unique)
+                                      }
+                                      
+                                      var compound_columns = Object.keys(ooo.f[0])
+                                      $scope.compound_column_level_options = {}
+                                      for(var i=0; i< compound_columns.length;i++){
+                                        $scope.compound_column_level_options[compound_columns[i]] = unpack(ooo.f, compound_columns[i]).filter(unique)
+                                      }
+                                      
+                                      
                                       console.log(dataa.node.original.id + " is selected.")
                                       // now user selected the dataset he wants to do.
                                       // 1. get the study pipeline. Create a prent list and clear it until there is no parent.
@@ -1904,6 +1965,12 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                               new_tree_structure[i].parameters.columns = [new_tree_structure[i].parameters.columns]
                                               console.log(new_tree_structure[i].parameters.columns)
                                             }
+                                          }else if(new_tree_structure[i].analysis_type == 'mTIC_normalization'){
+                                            if(typeof(new_tree_structure[i].parameters.known_level)=='string'){
+                                              console.log(new_tree_structure[i].parameters.known_level)
+                                              new_tree_structure[i].parameters.known_level = [new_tree_structure[i].parameters.known_level]
+                                              console.log(new_tree_structure[i].parameters.known_level)
+                                            }
                                           }
                                         }
 
@@ -1916,7 +1983,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                             $('#chosen_project_tree_one_stop').jstree("deselect_all");
                                             $('#chosen_project_tree_one_stop').jstree('select_node', $scope.new_tree_structure[$scope.selectedIndex].id);
                                             if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='fold_change'){
-                                              $scope.new_tree_structure[$scope.selectedIndex].fold_change_method_options = ['median','mean']
+                                              $scope.new_tree_structure[$scope.selectedIndex].fold_change_method_options = fold_change_methods
                                               $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.column",function(){
                                                 var levels = unpack(ooo.p,$scope.new_tree_structure[$scope.selectedIndex].parameters.column).filter(unique)
                                                 $scope.new_tree_structure[$scope.selectedIndex].fold_change_direction_options = [{
@@ -1926,8 +1993,20 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                                 }]
                                               })
                                             }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='log_transformation'){
-                                              $scope.new_tree_structure[$scope.selectedIndex].log_transformation_method_options = ['log10','log2']
+                                              $scope.new_tree_structure[$scope.selectedIndex].log_transformation_method_options = log_transformation_methods
                                             }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='mann_whitney_u_test'){
+                                              $scope.new_tree_structure[$scope.selectedIndex].FDR_options = FDR_options
+                                              $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.column",function(){
+                                                var levels = unpack(ooo.p,$scope.new_tree_structure[$scope.selectedIndex].parameters.column).filter(unique)
+                                                $scope.new_tree_structure[$scope.selectedIndex].alternative_options = [{
+                                                  id:'greater',text:levels[0]+" greater than "+levels[1]
+                                                },{
+                                                  id:'two.sided',text:levels[0]+" not equal to "+levels[1]
+                                                },{
+                                                  id:'less',text:levels[0]+" less than "+levels[1]
+                                                }]
+                                            })
+                                          }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='welch_t_test'){
                                               $scope.new_tree_structure[$scope.selectedIndex].FDR_options = FDR_options
                                               $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.column",function(){
                                                 var levels = unpack(ooo.p,$scope.new_tree_structure[$scope.selectedIndex].parameters.column).filter(unique)
@@ -2042,17 +2121,186 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                              })
                                           }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='plsda'){
 
+                                            $scope.new_tree_structure[$scope.selectedIndex].shape_options = shape_by_options
+                                              $scope.new_tree_structure[$scope.selectedIndex].scale_options = scale_options
+                                              $scope.new_tree_structure[$scope.selectedIndex].shape_by_options = delete_element_from_array(Object.keys(ooo.p[0]),'label')
+                                             $scope.new_tree_structure[$scope.selectedIndex].shape_by_options.push("SINGLE_SHAPE")
+                                             $scope.new_tree_structure[$scope.selectedIndex].color_by_options = delete_element_from_array(Object.keys(ooo.p[0]),'label')
+                                             $scope.new_tree_structure[$scope.selectedIndex].color_by_options.push("SINGLE_COLOR")
+
+                                             $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.pair_score_plot.color_by",function(newValue){
+                                               new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color_levels = unpack(ooo.p,new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color_by).filter(unique)
+                                               new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color = []
+                                               for(var i=0;i<new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color_levels.length;i++){
+                                                 if(new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color_levels.length==1){
+                                                   new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color_levels[i],
+                                                     option:"rgba(0,0,0,1)"
+                                                   })
+                                                 }else{
+                                                   new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.color_levels[i],
+                                                     option:color_palette.mpn65[i]
+                                                   })
+                                                 }
+                                               }
+                                             })
+                                             $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.pair_score_plot.shape_by",function(newValue){
+                                               new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.shape_levels = unpack(ooo.p,new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.shape_by).filter(unique)
+                                               new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.shape = []
+                                               for(var i=0;i<new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.shape_levels.length;i++){
+                                                   new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.shape.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.pair_score_plot.shape_levels[i],
+                                                     option:shape_palette.ggplot2[i]
+                                                   })
+                                               }
+                                             })
+
+
+
+
+
+                                             $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.score_plot.color_by",function(newValue){
+                                               new_tree_structure[$scope.selectedIndex].parameters.score_plot.color_levels = unpack(ooo.p,new_tree_structure[$scope.selectedIndex].parameters.score_plot.color_by).filter(unique)
+                                               new_tree_structure[$scope.selectedIndex].parameters.score_plot.color = []
+                                               for(var i=0;i<new_tree_structure[$scope.selectedIndex].parameters.score_plot.color_levels.length;i++){
+                                                 if(new_tree_structure[$scope.selectedIndex].parameters.score_plot.color_levels.length==1){
+                                                   new_tree_structure[$scope.selectedIndex].parameters.score_plot.color.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.score_plot.color_levels[i],
+                                                     option:"rgba(0,0,0,1)"
+                                                   })
+                                                 }else{
+                                                   new_tree_structure[$scope.selectedIndex].parameters.score_plot.color.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.score_plot.color_levels[i],
+                                                     option:color_palette.mpn65[i]
+                                                   })
+                                                 }
+                                               }
+                                             })
+                                             $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.score_plot.shape_by",function(newValue){
+                                               new_tree_structure[$scope.selectedIndex].parameters.score_plot.shape_levels = unpack(ooo.p,new_tree_structure[$scope.selectedIndex].parameters.score_plot.shape_by).filter(unique)
+                                               new_tree_structure[$scope.selectedIndex].parameters.score_plot.shape = []
+                                               for(var i=0;i<new_tree_structure[$scope.selectedIndex].parameters.score_plot.shape_levels.length;i++){
+                                                   new_tree_structure[$scope.selectedIndex].parameters.score_plot.shape.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.score_plot.shape_levels[i],
+                                                     option:shape_palette.ggplot2[i]
+                                                   })
+                                               }
+                                             })
+
+
+
+
+
+                                             $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.loading_plot.color_by",function(newValue){
+                                               console.log("!")
+                                               new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color_levels = unpack(ooo.f,new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color_by).filter(unique)
+                                               new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color = []
+                                               for(var i=0;i<new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color_levels.length;i++){
+                                                 if(new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color_levels.length==1){
+                                                   new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color_levels[i],
+                                                     option:"rgba(0,0,0,1)"
+                                                   })
+                                                 }else{
+                                                   new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color_levels[i],
+                                                     option:color_palette.mpn65[i]
+                                                   })
+                                                 }
+                                               }
+                                               console.log(new_tree_structure[$scope.selectedIndex].parameters.loading_plot.color )
+                                             })
+                                             $scope.$watch("new_tree_structure["+$scope.selectedIndex+"].parameters.loading_plot.shape_by",function(newValue){
+                                               new_tree_structure[$scope.selectedIndex].parameters.loading_plot.shape_levels = unpack(ooo.f,new_tree_structure[$scope.selectedIndex].parameters.loading_plot.shape_by).filter(unique)
+                                               new_tree_structure[$scope.selectedIndex].parameters.loading_plot.shape = []
+                                               for(var i=0;i<new_tree_structure[$scope.selectedIndex].parameters.loading_plot.shape_levels.length;i++){
+                                                   new_tree_structure[$scope.selectedIndex].parameters.loading_plot.shape.push({
+                                                     levels:new_tree_structure[$scope.selectedIndex].parameters.loading_plot.shape_levels[i],
+                                                     option:shape_palette.ggplot2[i]
+                                                   })
+                                               }
+                                             })
+                                          
+                                          
+                                          }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='data_attach'){
+                                            $scope.new_tree_structure[$scope.selectedIndex].target_data_text = $scope.new_tree_structure[
+                                              unpack($scope.new_tree_structure,"id").indexOf(project_docc.tree_structure[unpack(project_docc.tree_structure,"attachment_id").indexOf($scope.new_tree_structure[$scope.selectedIndex].parameters.source.split("/").slice(-1)[0])].parent)
+                                              ].text 
+                                            
+                                            for(var i = 0; i<$scope.new_tree_structure[$scope.selectedIndex].parameters.compound_infos.length;i++){
+                                              $scope.new_tree_structure[$scope.selectedIndex].parameters.compound_infos[i].attaching_data_name = $scope.new_tree_structure[unpack($scope.new_tree_structure,"id").indexOf(gsub(".csv","",[$scope.new_tree_structure[$scope.selectedIndex].parameters.compound_infos[i].node_id])[0])].text
+                                              if(typeof($scope.new_tree_structure[$scope.selectedIndex].parameters.compound_infos[i].column) === 'string'){
+                                                $scope.new_tree_structure[$scope.selectedIndex].parameters.compound_infos[i].column = [$scope.new_tree_structure[$scope.selectedIndex].parameters.compound_infos[i].column]
+                                              }
+                                            }
+                                            
+                                            
+                                            for(var i = 0; i<$scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos.length;i++){
+                                              
+                                              $scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos[i].attaching_data_name = $scope.new_tree_structure[unpack($scope.new_tree_structure,"id").indexOf(gsub(".csv","",[$scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos[i].node_id])[0])].text
+                                              
+                                              console.log($scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos[i].attaching_data_name)
+                                              
+                                              
+                                              if(typeof($scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos[i].column) === 'string'){
+                                                $scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos[i].column = [$scope.new_tree_structure[$scope.selectedIndex].parameters.sample_infos[i].column]
+                                              }
+                                            }
+                                            
+                                            
+                                            
+                                          
+                                            
+                                          }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='subset'){
+                                            $scope.new_tree_structure[$scope.selectedIndex].target_data_text = $scope.new_tree_structure[
+                                              unpack($scope.new_tree_structure,"id").indexOf(project_docc.tree_structure[unpack(project_docc.tree_structure,"attachment_id").indexOf($scope.new_tree_structure[$scope.selectedIndex].parameters.source.split("/").slice(-1)[0])].parent)
+                                              ].text 
+                                          }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='chemrich'){
+                                            $scope.chemrich_column_options = $scope.compound_column_options.concat(['label',"p_values","median fold change"])
+                                          }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='heatmap'){
+                                            $scope.new_tree_structure[$scope.selectedIndex].color_scale_options = color_scale_options
+                                            $scope.new_tree_structure[$scope.selectedIndex].order_sample_by_options = ["as is","dendrogram"].concat($scope.sample_column_options)
+                                            $scope.new_tree_structure[$scope.selectedIndex].order_compound_by_options = ["as is","dendrogram"].concat($scope.compound_column_options)
+                                            
+                                            
+                                            if(typeof($scope.new_tree_structure[$scope.selectedIndex].parameters.order_sample_by)=='string'){
+                                              $scope.new_tree_structure[$scope.selectedIndex].parameters.order_sample_by=[$scope.new_tree_structure[$scope.selectedIndex].parameters.order_sample_by]
+                                            }
+                                            
+                                            if(typeof($scope.new_tree_structure[$scope.selectedIndex].parameters.order_compound_by)=='string'){
+                                              $scope.new_tree_structure[$scope.selectedIndex].parameters.order_compound_by=[$scope.new_tree_structure[$scope.selectedIndex].parameters.order_compound_by]
+                                            }
+                                            
+                                          }else if($scope.new_tree_structure[$scope.selectedIndex].analysis_type=='one_way_boxplot'){
+                                            
+                                            
+                                            $scope.new_tree_structure[$scope.selectedIndex].change_levels = function(column){
+                                              $scope.new_tree_structure[$scope.selectedIndex].parameters.levels = $scope.sample_column_level_options[column].join("||")
+                                              
+                                            }
+                                            $scope.new_tree_structure[$scope.selectedIndex].style_options = ["default", "classic", "Louise Fong"]
+                                              $scope.new_tree_structure[$scope.selectedIndex].format_options = ['svg','png']
+                                            
                                           }
 
                                           }else{
                                             $scope.selectedIndex = 0
                                           }
                                           }
+                                          
+                                          
+                                          
+                                          
                                         $scope.go_to_previous_tab = function(index){
                                           $scope.selectedIndex = $scope.selectedIndex-1
                                         }
                                         $scope.confirm_pipeline = function(){
-                                          // go to R and perform these statistical analysis.
+                                          // go to R and perform these statistical analysis.!!!!!!
+                                          // now call function to get the project.
+                                          
+                                          
+                                          
                                         }
 
                                      //}
@@ -2093,6 +2341,32 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                 console.log("one_stop was not applied.")
                               });
 
+                          }
+                        }
+                        ,"Edit":{
+                           "label":"Edit Dataset",
+                          "icon":"fa fa-edit",
+                          "_disabled":!editable,
+                          "action":function(obj){
+                            nnn = $node
+                            ooo = obj
+                            
+                            // open a modal to upload dataset.
+                            $mdDialog.show({
+                              locals: { node: clicked_node, activated_project:activated_project},
+                              controller: ["$scope","$mdDialog","node", "activated_project",edit_data],
+                              templateUrl: 'edit_data.html',
+                              parent: angular.element(document.body),preserveScope : false,
+                              clickOutsideToClose:false
+                            })
+                            .then(function(answer) {
+                              $scope.status = 'You said the information was "' + answer + '".';
+                            }, function() {
+                              $scope.status = 'You cancelled the dialog.';
+                            });
+                            
+                            
+                            
                           }
                         }
                       }
@@ -2157,45 +2431,10 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       }).done(function(){
                         console.log("Data read from the database.")
                       }).fail(function(){
+                        cfpLoadingBar.complete();
                         alert("Error: " + req.responseText)
                       })
 
-
-                      /*Papa.parse("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+ mainctrl.activated_project_id +"/"+ddd.node.original.attachment_id, {
-                      	download: true,
-                      	complete: function(results) {
-                      		rrr = results;
-                      		// 3 send dataset to the module. Make the results.data the format as the textarea.
-                      		input_txt = results.data.map(x=>x.join("\t")).join("\n")
-              		       var req=ocpu.call("upload_data_from_input",{
-                           txt:input_txt
-                         },function(session){
-                           sss = session
-                           session.getObject(function(obj){
-                             console.log(index_of_data)
-                             if(index_of_data==1){
-                               ooo = obj
-                               ctrl.make_data_read_here(obj)
-                             }else if(index_of_data==2){
-                               ooo2 = obj
-                               ctrl.make_data_read_here2(obj)
-                             }else{
-                               console.log("Error: Wrong index_of_data: " + index_of_data)
-                             }
-
-                             //mainctrl.waiting_user_to_select_data = false
-                             console.log("Dataset read. Closing the panel.")
-                             cfpLoadingBar.complete();
-                             $mdSidenav('right').close();
-                             $scope.$apply();
-                           })
-                         }).done(function(){
-                           console.log("Data read from the textarea.")
-                         }).fail(function(){
-                           alert("Error: " + req.responseText)
-                         })
-                      	}
-                      });*/
                     }else{
                       if(ddd.node.icon == 'fa fa-folder'){ // if user clicked a folder, then user is probabaly trying to open a folder and select a dataset inside this folder. Then no need to warn user. Otherwise, warn user that you have to select '.csv' file.
                         console.log("user clicked a folder. It is fine.")
@@ -2322,12 +2561,13 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                console.log("!")
                sss = session
                session.getObject(function(obj){
+                 $scope.confirm_and_upload_dataset_button_show = true
                  ooo = obj
                  var dataSet = ooo.data_matrix
-
+                 $scope.confirm_and_upload_text = "Confirm and Upload This Dataset"
                  $scope.confirm_and_upload_dataset = function(){
                    //var dataSet = ooo.data_matrix
-                   console.log(node)
+                   $scope.confirm_and_upload_text = "Uploading"
                    nnn = node
                    aaa = activated_project
                    // add the data as .csv attachment. modify the jstree structure. refresh jstree.
@@ -2342,7 +2582,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                     }else{
                       filename = filename.substring(0, filename.length - 5);
                     }
-
+                    
                     var fileid = filename + "_" + time_string + ".csv"
                     var filename = filename + '.csv'
                     //!!! check if the filename is taken. If it is taken. Add a 2 at tail.
@@ -2451,11 +2691,12 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                        new_node:new_node,
                        tree_structure:project_doc.tree_structure
                      },function(session){
-                       console.log(session)
+                       $scope.confirm_and_upload_text = "Confirm and Upload This Dataset"
                        update_jstree(project_doc)
                        $mdDialog.hide();
                      }).fail(function(){
                          alert("Error: " + req.responseText)
+                         $scope.confirm_and_upload_text = "Confirm and Upload This Dataset"
                        });
 
                   })
@@ -2490,13 +2731,77 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
           $mdDialog.hide();
         }
       }
+      
+      
+      
+      
+      function edit_data($scope, $mdDialog, node, activated_project){
+        $scope.download_text="Download"
+        $scope.upload_text = "Upload the Edited File"
+        $scope.download = function(){
+          $scope.download_text ="Downloading"
+          Papa.parse("https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project/"+activated_project+"/"+node.original.attachment_id.replace('+',"%2B"), {
+          	download: true,
+          	complete: function(results) {
+          	  $scope.download_text="Downloaded"
+          		rrr = results
+          		download_csv(Papa.unparse(rrr), node.original.text.substr(node.original.text.length - 4) === '.csv'? node.original.text : node.original.text+".csv")
+          		$scope.$apply()
+          	}
+          });
+        }
+        
+       nnn = node
+       aaa = activated_project
+        $scope.upload_dataset = function(file, errFiles){
+          $scope.upload_text = "Uploading"
+          var new_node = {
+            "id":node.original.id,
+            "parent":node.original.parent,
+            "text":node.original.text,
+            "icon":"fa fa-file-excel-o",
+            "attachment_id":node.original.attachment_id,
+            "efp":true
+            }
+            
+            var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+            db_project.get(activated_project, {attachments: false}).then(function(project_doc){
+              ppp = project_doc
+              var req = ocpu.call("confirm_and_upload_dataset",{
+                 path:file,
+                 project_id:activated_project,
+                 new_node:new_node,
+                 tree_structure:project_doc.tree_structure
+               },function(session){
+                 update_jstree(project_doc)
+                 $scope.upload_text = "Edited Dataset Uploaded! closing in 2 seconds..."
+                 $scope.$apply();
+                 setTimeout(function () {
+                   $mdDialog.hide();
+                 }, 2000);
+               }).fail(function(){
+                   alert("Error: " + req.responseText)
+                   $scope.upload_text = "Upload the Edited File"
+                 });
+              
+            })
+                    
+                    
+
+          
+        }
+
+        $scope.cancel = function(){
+          $mdDialog.hide();
+        }
+      }
+      
 
       function show_all_projects($scope, $mdDialog, $mdColorPalette) {
 
 
 
        $scope.show_tutorial = function(tutorial_name) {
-          console.log(tutorial_name)
           $mdDialog.show({
             locals: { tutorial_name:tutorial_name},
             controller: ["$scope","$mdDialog","$mdColorPalette","$sce","tutorial_name",tutorial_controller],

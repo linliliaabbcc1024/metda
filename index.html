@@ -123,7 +123,9 @@
   font-size: 14px;
   opacity: 0.54;
 }
-
+.no_bottom_margin {
+  margin-bottom:0;
+}
 .hint {
     /* Position the hint */
     position: absolute;
@@ -585,12 +587,14 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
 </script>
 
+
+
 <script type="text/ng-template" id="upload_data.html">
 <md-dialog aria-label="Upload a Dataet">
   <form ng-cloak>
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>Upload a Dataet</h2>
+        <h2>Upload a Dataset</h2>
         <md-button class="md-icon-button" aria-label="Question" ng-click="mainctrl.show_tutorial('upload_dataset')">
           <md-tooltip md-direction="bottom">Tutorial</md-tooltip>
           <i class="material-icons">help_outline</i>
@@ -614,7 +618,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
       <div layout='row'>
       <div flex="20"></div>
       <div flex="60">
-        <div layout="column" layout-align="center center"><button id='upload_dataset' type="file" ngf-select="upload_dataset($file, $invalidFiles)" accept=".xlsx, .csv" ngf-max-size="15MB" class="md-button md-raised md-hue-1">Select Local File</button><div style="font:smaller"><p style="margin-bottom:0">{{f.name}} <span style="color:red">{{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}</span></p><md-progress-linear md-mode="determinate" value="{{f.progress}}"></md-progress-linear></div></div>
+        <div layout="column" layout-align="center center"><button id='upload_dataset' type="file" ngf-select="upload_dataset($file, $invalidFiles)" accept=".xlsx, .csv" class="md-button md-raised md-hue-1">Select Local File</button><div style="font:smaller"><p style="margin-bottom:0">{{f.name}} <span style="color:red">{{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}</span></p><md-progress-linear md-mode="determinate" value="{{f.progress}}"></md-progress-linear></div></div>
       </div>
       </div>
       <div layout="column">
@@ -626,24 +630,97 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
         </div>
         </div>
       </div>
-
-
-
       </div>
-
-
       </div>
     </md-dialog-content>
 
-    <md-dialog-actions layout="row">
-      <md-button ng-click="confirm_and_upload_dataset()" class="md-primary md-raised">
-        Confirm and Upload This Dataset
+    <md-dialog-actions layout="row" ng-show="confirm_and_upload_dataset_button_show">
+      <md-button ng-click="confirm_and_upload_dataset()" class="md-primary md-raised" ng-disabled="confirm_and_upload_text == 'Uploading'">
+        {{confirm_and_upload_text}}
       </md-button>
     </md-dialog-actions>
   </form>
 </md-dialog>
 </script>
-<script type="text/ng-template" id="tutorial.html"><md-dialog aria-label="Tutorial">
+
+
+
+
+
+<script type="text/ng-template" id="edit_data.html">
+<md-dialog aria-label="Edit this Dataet">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Edit this Dataset</h2>
+        <md-button class="md-icon-button" aria-label="Question" ng-click="mainctrl.show_tutorial('edit_dataset')">
+          <md-tooltip md-direction="bottom">Tutorial</md-tooltip>
+          <i class="material-icons">help_outline</i>
+        </md-button>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <ol>
+          <li>Download the Dataset</li>
+          <md-button ng-click="download()" class="md-raised md-hue-1" ng-disabled = "download_text !== 'Download'">
+            {{download_text}}
+          </md-button>
+          <li>Open it and Edit it with your local PC</li>
+          <li>Upload the edited dataset by clicking "Select File"</li>
+          <button ng-show = "download_text == 'Downloaded'" type="file" ngf-select="upload_dataset($file, $invalidFiles)" accept=".xlsx, .csv" class="md-button md-raised md-hue-1">{{upload_text}}</button>
+          
+        </ol>
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" ng-show="confirm_and_upload_dataset_button_show">
+      <md-button ng-click="confirm_and_upload_dataset()" class="md-primary md-raised" ng-disabled="confirm_and_upload_text == 'Uploading'" ng-disabled="!confirm_and_upload_text !=='Upload the Edited File'">
+        {{confirm_and_upload_text}}
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+</script>
+
+
+
+
+
+<script type="text/ng-template" id="video_tutorial.html">
+<md-dialog aria-label="Video Tutorial">
+<form ng-cloak>
+    <md-toolbar style='background-color:darkcyan'>
+      <div class="md-toolbar-tools">
+        <h3>{{name}}</h3>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    
+    <md-dialog-content>
+    <div class="md-dialog-content">
+      <video width="600" controls>
+        <source src="{{src}}">
+        Your browser does not support HTML5 video.
+      </video>
+      
+    </div>
+    </md-dialog-content>
+</form>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="tutorial.html">
+<md-dialog aria-label="Tutorial">
 <form ng-cloak>
 <md-toolbar style='background-color:darkcyan'>
   <div class="md-toolbar-tools">
@@ -672,17 +749,29 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
     </ul>
   </div>
   <div ng-show="name=='Available Projects Tips'">
+  <ul>
     <li>Click <a href="" ng-click="create_project_gif = !create_project_gif" style="color:black"><i class="fa fa-play-circle"></i><md-tooltip md-direction="right">see how to activate a project</md-tooltip></a> to watch how to create a new project.</li>
     <li ng-show="create_project_gif"><img src="tutorials/create_project.gif" alt="Create Project GIF" height="553" width="952"></li>
     <li>Click <a href="" ng-click="activate_project_gif = !activate_project_gif" style="color:black"><i class="fa fa-play-circle"></i><md-tooltip md-direction="right">see how to activate a project</md-tooltip></a> to watch how to activate an existing project.</li>
     <li ng-show="activate_project_gif"><img src="tutorials/activate_project.gif" alt="Create Project GIF" height="553" width="952"></li>
+    </ul>
 
   </div>
+  
+  <div ng-show="name=='Data Subset'">
+    <ul>
+      <li>Subset your dataset based on sample or compound information.</li>
+      <li>For example, you may select only <em>Male</em> samples and <em>identified</em> compounds.</li>
+    </ul>
+
+  </div>
+  
+  
   <md-divider></md-divider>
   <div>
     <md-input-container class="md-block">
       <label>Didn't find what you want? Leave a message!</label>
-      <textarea ng-model="message" rows="3"></textarea>
+      <textarea ng-model="message" rows="1"></textarea>
     </md-input-container>
     <md-button ng-disabled="submit_text!=='Submit'" md-colors="{background: 'teal'}" ng-show='message.length>0' ng-click="submit_message(message)">{{submit_text}}</md-button>
   </div>
@@ -700,17 +789,6 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
 </md-dialog>
 </script>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -751,20 +829,6 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
 </md-dialog>
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <script type="text/ng-template" id="one_stop_modal.html">
 <md-dialog aria-label="One-Stop Quick Analysis" flex="90">
@@ -814,11 +878,59 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
               <md-tabs md-selected="selectedIndex" md-border-bottom="" md-dynamic-height="">
                 <md-tab ng-repeat="structure in new_tree_structure" label="{{structure.text}}">
-<!--DIFFERNET ANALYSIS TYPE LIST HERE-->
+                <!--DIFFERNET ANALYSIS TYPE LIST HERE-->
+                <div ng-show="selectedIndex === 0">
+                  <p>You've select the statistical analysis pipeline that was applied to the <em>{{structure.text}}</em>.</p>
+                  <p>We are going to go through the pipeline, and make sure all the parameters are correct. Please click Next.</p>
+                </div>
+                  
+                  
                   <div ng-show="structure.analysis_type == 'QRILC'">
-                    <p>No Specific Option for QRILC imputation</p>
-                    <p><em>Click Next</em></p>
+                    <p>No Specific Option for QRILC imputation.</p>
+                    <p>Click <em>Next</em> to continue. Or click <em>Skip</em> to skip performing {{structure.analysis_type}}.</p>
                   </div>
+                  
+                  
+                  <div ng-show="structure.analysis_type == 'mTIC_normalization'">
+                    <p>Please select which column and which levels in this column are used as known compounds for mTIC normalization.</p>
+                    <div layout='rows'>
+                      <md-input-container class="md-block" flex>
+                          <label>Known Compounds Column</label>
+                          <md-select ng-model="structure.parameters.known_column">
+                            <md-option ng-repeat="column_option in compound_column_options" value="{{column_option}}">
+                              {{column_option}}
+                            </md-option>
+                          </md-select>
+                      </md-input-container>
+                    
+                      <md-input-container class="md-block" flex>
+                          <label>Known Compounds Column</label>
+                          <md-select ng-model="structure.parameters.known_level" multiple="">
+                            <md-option ng-repeat="column_option in compound_column_level_options[structure.parameters.known_column]" value="{{column_option}}">
+                              {{column_option}}
+                            </md-option>
+                          </md-select>
+                      </md-input-container>
+                     
+                    </div>
+                    <p>Click <em>Next</em> to continue. Or click <em>Skip</em> to skip performing {{structure.analysis_type}}.</p>
+                  </div>
+                  
+                  
+                <div ng-show="structure.analysis_type == 'log_transformation'">
+                    <p>Which log transformation would you like to perform?</p>
+                    <div layout='rows'>
+                      <md-input-container class="md-block" flex>
+                          <label>Log transformation method</label>
+                          <md-select ng-model="structure.parameters.method">
+                            <md-option ng-repeat="column_option in structure.log_transformation_method_options" value="{{column_option}}">
+                              {{column_option}}
+                            </md-option>
+                          </md-select>
+                      </md-input-container>
+                    </div>
+                  </div>
+                  
 
                   <div ng-show="structure.analysis_type == 'boxcox_transformation'">
                     <p>Please Specify All the Study Design Related Sample Metadata</p>
@@ -885,7 +997,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                     </div>
                   </div>-->
 
-                  <div ng-show="structure.analysis_type == 'mann_whitney_u_test'">
+                  <div ng-show="['mann_whitney_u_test','welch_t_test'].indexOf(structure.analysis_type) > -1 ">
                     <p>Please Specify a Column with Two Groups</p>
                     <div layout='rows'>
                         <md-input-container class="md-block" flex>
@@ -910,9 +1022,14 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                       </md-input-container>
                     </div>
                   </div>
+                  
+                  
+                  
+                  
+                  
 
                   <div ng-show="structure.analysis_type == 'pca'">
-                    <p>Specify a Scaling Method</p>
+                    <p>Please specify the scaling method and also the plot parameters for PCA.</p>
                     <div layout='rows'>
                       <md-input-container class="md-block" flex='30'>
                         <label>Data Scaling</label>
@@ -921,31 +1038,36 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                         </md-select>
                       </md-input-container>
                     </div>
-
-
-
-<div layout="row">
-      <div flex="100">
-      <p>Pair Score Plot</p>
+                    
+<md-divider></md-divider><br />
+<p><b>Pair Score Plot</b></p>
+    <div layout="row">
+      <div style='overflow:auto'>
+      <div layout='column'>
          <fieldset style="margin-right:15">
           <legend>Colors:</legend>
           <md-input-container class="md-block" flex='100'>
             <label>Color By:</label>
             <md-select ng-model="structure.parameters.pair_score_plot.color_by">
-              <md-option ng-repeat = "color_by_option in structure.parameters.pair_score_plot.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+              <md-option ng-repeat = "color_by_option in structure.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
             </md-select>
           </md-input-container>
 
-          <div ng-repeat="color in structure.parameters.pair_score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" skip-hide='true' preserve-scope='true'></div>
+
+
+          <div ng-repeat="color in structure.parameters.pair_score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
+
+
 
          </fieldset>
+
 
          <fieldset style="margin-right:15">
           <legend>Shapes:</legend>
           <md-input-container class="md-block" flex='100'>
             <label>Shape By:</label>
             <md-select ng-model="structure.parameters.pair_score_plot.shape_by">
-              <md-option ng-repeat = "shape_by_option in structure.parameters.pair_score_plot.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+              <md-option ng-repeat = "shape_by_option in structure.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
             </md-select>
           </md-input-container>
           <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.pair_score_plot.shape">
@@ -954,46 +1076,44 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
               <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
             </md-select>
           </md-input-container>
+          
+          
+          <md-input-container class="md-block" flex='100'>
+            <label>Scatter Size:</label>
+            <input type="number" ng-model="structure.parameters.pair_score_plot.scatter_size" aria-label="Scatter Size" step="0.1" min="1" max="15"  flex="60">
+          </md-input-container>
+      
+      
          </fieldset>
 
-    <div layout="row">
-      <div flex="15" layout="" layout-align="center center"><span class="md-body-1">Scatter Size</span></div>
-      <md-slider flex="60" class="md-primary" md-discrete="" ng-model="structure.parameters.pair_score_plot.scatter_size" step="0.1" min="1" max="15" aria-label="Scatter Size"></md-slider>
-      <md-input-container flex>
-        <input type="number" ng-model="structure.parameters.pair_score_plot.scatter_size" aria-label="Scatter Size" aria-controls="blue-slider" step="0.1" min="1" max="15"  flex="60">
-      </md-input-container>
+
     </div>
 
 
 
       </div>
-      </div>
+    </div>
 
 
-
-
-
-
-
-
-<div layout="row">
-      <div flex="100">
-      <p>Score Plot</p>
+<md-divider></md-divider><br />
+<p><b>Score Plot</b></p>
+    <div layout="row">
+      <div style='overflow:auto'>
         <div layout='column'>
-        <fieldset style="margin-right:15">
+                   <fieldset style="margin-right:15">
           <legend>Colors:</legend>
           <md-input-container class="md-block" flex='100'>
             <label>Color By:</label>
             <md-select ng-model="structure.parameters.score_plot.color_by">
-              <md-option ng-repeat = "color_by_option in structure.parameters.score_plot.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+              <md-option ng-repeat = "color_by_option in structure.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
             </md-select>
           </md-input-container>
 
 
-          <div ng-repeat="color in structure.parameters.score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" skip-hide='true' preserve-scope='true'></div>
 
+          <div ng-repeat="color in structure.parameters.score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="tos" ng-model="structure.parameters.score_plot.ellipse_color" required="" class='md-primary'>
               Add Ellipse According To Colors.
             </md-checkbox>
@@ -1017,8 +1137,8 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
             </md-select>
           </md-input-container>
 
-          <md-input-container class="md-block">
-            <md-checkbox name="ellipse_shape" ng-model="structure.parameters.score_plot.ellipse_shape" required="" class='md-primary'>
+          <md-input-container class="md-block no_bottom_margin">
+            <md-checkbox name="score_ellipse_shape" ng-model="structure.parameters.score_plot.ellipse_shape" required="" class='md-primary'>
               Add Ellipse According To Shapes.
             </md-checkbox>
           </md-input-container>
@@ -1040,17 +1160,17 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
                   <md-option ng-repeat = "pcy_option in structure.parameters.score_plot.pcy_options" value="{{pcy_option.value}}">{{pcy_option.text}}</md-option>
                 </md-select>
               </md-input-container>
+              
+             
            </div>
+           
+            <md-input-container class="md-block" flex="100">
+            <label>Scatter Size:</label>
+            <input type="number" ng-model="structure.parameters.score_plot.scatter_size" aria-label="Scatter Size" step="0.1" min="1" max="15"  flex="60">
+          </md-input-container>
 
-            <div layout="row">
-              <div flex="15" layout="" layout-align="center center"><span class="md-body-1">Scatter Size</span></div>
-              <md-slider flex="60" class="md-primary" md-discrete="" ng-model="structure.parameters.score_plot.scatter_size" step="0.1" min="1" max="15" aria-label="Scatter Size"></md-slider>
-              <md-input-container>
-                <input type="number" ng-model="structure.parameters.score_plot.scatter_size" aria-label="Scatter Size" aria-controls="blue-slider" step="0.1" min="1" max="15"  flex="60">
-              </md-input-container>
-            </div>
-
-            <md-input-container class="md-block">
+      
+            <md-input-container class="md-block no_bottom_margin">
               <md-checkbox name="tos" ng-model="structure.parameters.score_plot.add_center" required="" class='md-primary'>
                 Add Group Centers.
               </md-checkbox>
@@ -1058,14 +1178,21 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
          </fieldset>
         </div>
+
+
+
+
+
+
       </div>
     </div>
 
-<div layout="row">
-      <div flex="100">
-      <p>Loading Plot</p>
-        <div layout='column'>
-        <fieldset style="margin-right:15">
+<md-divider></md-divider><br />
+<p><b>Loading Plot</b></p>
+    <div layout="row">
+      <div style='overflow:auto'>
+<div layout='column'>
+         <fieldset style="margin-right:15">
           <legend>Colors:</legend>
           <md-input-container class="md-block" flex='100'>
             <label>Color By:</label>
@@ -1075,10 +1202,10 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
           </md-input-container>
 
 
-          <div ng-repeat="color in structure.parameters.loading_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" skip-hide='true' preserve-scope='true'></div>
 
+          <div ng-repeat="color in structure.parameters.loading_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="tos" ng-model="structure.parameters.loading_plot.ellipse_color" required="" class='md-primary'>
               Add Ellipse According To Colors.
             </md-checkbox>
@@ -1102,7 +1229,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
             </md-select>
           </md-input-container>
 
-          <md-input-container class="md-block">
+          <md-input-container class="md-block no_bottom_margin">
             <md-checkbox name="ellipse_shape" ng-model="structure.parameters.loading_plot.ellipse_shape" required="" class='md-primary'>
               Add Ellipse According To Shapes.
             </md-checkbox>
@@ -1112,6 +1239,7 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
          <fieldset style='margin-right:15'>
            <legend>Other Parameters:</legend>
+
            <div layout="row">
               <md-input-container flex='50'>
                 <label>PC x Axis:</label>
@@ -1127,24 +1255,31 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
               </md-input-container>
            </div>
 
-            <div layout="row">
-              <div flex="15" layout="" layout-align="center center"><span class="md-body-1">Scatter Size</span></div>
-              <md-slider flex="60" class="md-primary" md-discrete="" ng-model="structure.parameters.loading_plot.scatter_size" step="0.1" min="1" max="15" aria-label="Scatter Size"></md-slider>
-              <md-input-container>
-                <input type="number" ng-model="structure.parameters.loading_plot.scatter_size" aria-label="Scatter Size" aria-controls="blue-slider" step="0.1" min="1" max="15"  flex="60">
-              </md-input-container>
-            </div>
+            
+            <md-input-container class="md-block" flex="100">
+            <label>Scatter Size:</label>
+            <input type="number" ng-model="structure.parameters.loading_plot.scatter_size" aria-label="Scatter Size" step="0.1" min="1" max="15"  flex="60">
+          </md-input-container>
+          
+          
+             
 
-            <md-input-container class="md-block">
+            <md-input-container class="md-block no_bottom_margin">
               <md-checkbox name="tos" ng-model="structure.parameters.loading_plot.add_center" required="" class='md-primary'>
                 Add Group Centers.
               </md-checkbox>
             </md-input-container>
 
          </fieldset>
-        </div>
+
       </div>
+      
     </div>
+    
+    
+    </div>
+
+
 </div>
 
 
@@ -1153,45 +1288,554 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
 
 
 
-
-
-
                   <div ng-show="structure.analysis_type == 'plsda'">
-                    <p>Please Specify Parameters for VIP plot</p>
-                    <div layout="row">
-                      <div flex="100">
-                      <fieldset style="margin-right:15">
-                      <legend>Parameters:</legend>
-                        <md-input-container class="md-block" flex='100'>
-                          <label>Number of Variables:</label>
-                          <input name="n_vip" ng-model="structure.parameters.vip_plot.n_vip" placeholder="number of variables" required="" type="number" min="1" step="1">
+                    <p>Please specify the scaling method and also the plot parameters for PLS-DA.</p>
+                    <div layout='column'>
+                      <md-input-container class="md-block" flex='30'>
+                        <label>Data Scaling</label>
+                        <md-select ng-model="structure.parameters.scale">
+                          <md-option ng-repeat = "scale_option in structure.scale_options" value="{{scale_option.id}}">{{scale_option.text}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      
+                      
+                      <md-input-container class="md-block" flex>
+                            <label>column</label>
+                            <md-select ng-model="structure.parameters.response">
+                              <md-option ng-repeat="column_option in sample_column_options" value="{{column_option}}">
+                                {{column_option}}
+                              </md-option>
+                            </md-select>
                         </md-input-container>
-                        <md-input-container class="md-block" flex='100'>
-                          <label>Plot Height:</label>
-                          <input name="plot_height" ng-model="structure.parameters.vip_plot.heigth" placeholder="height of plot" type="number" min="100" step="100">
-                        </md-input-container>
-                        <md-input-container class="md-block" flex='100'>
-                          <label>Left Margin:</label>
-                          <input name="left_margin" ng-model="structure.parameters.vip_plot.margin.left" placeholder="margin of left" type="number" min="10" step="5">
-                        </md-input-container>
-                        <md-input-container class="md-block" flex='100'>
-                          <label>Variable Name Font Size:</label>
-                          <input name="left_margin" ng-model="structure.parameters.vip_plot.yaxis_font_size" placeholder="variable name font size" type="number" min="5" step="1">
-                        </md-input-container>
-                      </fieldset>
+                        
+                        
+                        
+                      </md-input-container>
+                      
+                      
+                      
+                      
+                    </div>
+                    
+<md-divider></md-divider><br />
+<p><b>Pair Score Plot</b></p>
+    <div layout="row">
+      <div style='overflow:auto'>
+      <div layout='column'>
+         <fieldset style="margin-right:15">
+          <legend>Colors:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Color By:</label>
+            <md-select ng-model="structure.parameters.pair_score_plot.color_by">
+              <md-option ng-repeat = "color_by_option in structure.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
 
+
+
+          <div ng-repeat="color in structure.parameters.pair_score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
+
+
+
+         </fieldset>
+
+
+         <fieldset style="margin-right:15">
+          <legend>Shapes:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Shape By:</label>
+            <md-select ng-model="structure.parameters.pair_score_plot.shape_by">
+              <md-option ng-repeat = "shape_by_option in structure.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.pair_score_plot.shape">
+            <label>Shape of {{shape.levels}}:</label>
+            <md-select ng-model="shape.option">
+              <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          
+          
+          <md-input-container class="md-block" flex='100'>
+            <label>Scatter Size:</label>
+            <input type="number" ng-model="structure.parameters.pair_score_plot.scatter_size" aria-label="Scatter Size" step="0.1" min="1" max="15"  flex="60">
+          </md-input-container>
+      
+      
+         </fieldset>
+
+
+    </div>
+
+
+
+      </div>
+    </div>
+
+
+<md-divider></md-divider><br />
+<p><b>Score Plot</b></p>
+    <div layout="row">
+      <div style='overflow:auto'>
+        <div layout='column'>
+                   <fieldset style="margin-right:15">
+          <legend>Colors:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Color By:</label>
+            <md-select ng-model="structure.parameters.score_plot.color_by">
+              <md-option ng-repeat = "color_by_option in structure.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+          <div ng-repeat="color in structure.parameters.score_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
+
+          <md-input-container class="md-block no_bottom_margin">
+            <md-checkbox name="tos" ng-model="structure.parameters.score_plot.ellipse_color" required="" class='md-primary'>
+              Add Ellipse According To Colors.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+
+         <fieldset style="margin-right:15">
+          <legend>Shapes:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Shape By:</label>
+            <md-select ng-model="structure.parameters.score_plot.shape_by">
+              <md-option ng-repeat = "shape_by_option in structure.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.score_plot.shape">
+            <label>Shape of {{shape.levels}}:</label>
+            <md-select ng-model="shape.option">
+              <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block no_bottom_margin">
+            <md-checkbox name="score_ellipse_shape" ng-model="structure.parameters.score_plot.ellipse_shape" required="" class='md-primary'>
+              Add Ellipse According To Shapes.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+         <fieldset style='margin-right:15'>
+           <legend>Other Parameters:</legend>
+           <div layout="row">
+              <md-input-container flex='50'>
+                <label>PC x Axis:</label>
+                <md-select ng-model="structure.parameters.score_plot.pcx">
+                  <md-option ng-repeat = "pcx_option in structure.parameters.score_plot.pcx_options" value="{{pcx_option.value}}">{{pcx_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+              <md-input-container flex='50'>
+                <label>PC y Axis:</label>
+                <md-select ng-model="structure.parameters.score_plot.pcy">
+                  <md-option ng-repeat = "pcy_option in structure.parameters.score_plot.pcy_options" value="{{pcy_option.value}}">{{pcy_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+              
+             
+           </div>
+           
+            <md-input-container class="md-block" flex="100">
+            <label>Scatter Size:</label>
+            <input type="number" ng-model="structure.parameters.score_plot.scatter_size" aria-label="Scatter Size" step="0.1" min="1" max="15"  flex="60">
+          </md-input-container>
+
+      
+            <md-input-container class="md-block no_bottom_margin">
+              <md-checkbox name="tos" ng-model="structure.parameters.score_plot.add_center" required="" class='md-primary'>
+                Add Group Centers.
+              </md-checkbox>
+            </md-input-container>
+
+         </fieldset>
+        </div>
+
+
+
+
+
+
+      </div>
+    </div>
+
+<md-divider></md-divider><br />
+<p><b>Loading Plot</b></p>
+    <div layout="row">
+      <div style='overflow:auto'>
+<div layout='column'>
+         <fieldset style="margin-right:15">
+          <legend>Colors:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Color By:</label>
+            <md-select ng-model="structure.parameters.loading_plot.color_by">
+              <md-option ng-repeat = "color_by_option in structure.parameters.loading_plot.color_by_options" value="{{color_by_option}}">{{color_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+          <div ng-repeat="color in structure.parameters.loading_plot.color" md-color-picker ng-model="color.option" label="{{color.levels}}" icon="color_lens" click-outside-to-close='false' open-on-input='true' skip-hide='false' ></div>
+
+          <md-input-container class="md-block no_bottom_margin">
+            <md-checkbox name="tos" ng-model="structure.parameters.loading_plot.ellipse_color" required="" class='md-primary'>
+              Add Ellipse According To Colors.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+
+         <fieldset style="margin-right:15">
+          <legend>Shapes:</legend>
+          <md-input-container class="md-block" flex='100'>
+            <label>Shape By:</label>
+            <md-select ng-model="structure.parameters.loading_plot.shape_by">
+              <md-option ng-repeat = "shape_by_option in structure.shape_by_options" value="{{shape_by_option}}">{{shape_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-block" flex='100' ng-repeat="shape in structure.parameters.loading_plot.shape">
+            <label>Shape of {{shape.levels}}:</label>
+            <md-select ng-model="shape.option">
+              <md-option ng-repeat = "shape_option in structure.shape_options" value="{{shape_option}}">{{shape_option}}</md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container class="md-block no_bottom_margin">
+            <md-checkbox name="ellipse_shape" ng-model="structure.parameters.loading_plot.ellipse_shape" required="" class='md-primary'>
+              Add Ellipse According To Shapes.
+            </md-checkbox>
+          </md-input-container>
+
+         </fieldset>
+
+         <fieldset style='margin-right:15'>
+           <legend>Other Parameters:</legend>
+
+           <div layout="row">
+              <md-input-container flex='50'>
+                <label>PC x Axis:</label>
+                <md-select ng-model="structure.parameters.loading_plot.pcx">
+                  <md-option ng-repeat = "pcx_option in structure.parameters.loading_plot.pcx_options" value="{{pcx_option.value}}">{{pcx_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+              <md-input-container flex='50'>
+                <label>PC y Axis:</label>
+                <md-select ng-model="structure.parameters.loading_plot.pcy">
+                  <md-option ng-repeat = "pcy_option in structure.parameters.loading_plot.pcy_options" value="{{pcy_option.value}}">{{pcy_option.text}}</md-option>
+                </md-select>
+              </md-input-container>
+           </div>
+
+            
+            <md-input-container class="md-block" flex="100">
+            <label>Scatter Size:</label>
+            <input type="number" ng-model="structure.parameters.loading_plot.scatter_size" aria-label="Scatter Size" step="0.1" min="1" max="15"  flex="60">
+          </md-input-container>
+          
+          
+             
+
+            <md-input-container class="md-block no_bottom_margin">
+              <md-checkbox name="tos" ng-model="structure.parameters.loading_plot.add_center" required="" class='md-primary'>
+                Add Group Centers.
+              </md-checkbox>
+            </md-input-container>
+
+         </fieldset>
+
+      </div>
+      
+    </div></div>  </div>
+
+                  
+
+
+
+
+                <div ng-show="structure.analysis_type == 'data_attach'">
+                    <p>Please specify which Sample info and Compound info you would like to attach to the <em>{{structure.target_data_text}}</em> dataset.</p>
+                    <div layout="column">
+                      <div ng-repeat = "compound_info in structure.parameters.compound_infos">
+                        <md-input-container class="md-block" flex>
+                          <label>Attaching <em>{{compound_info.attaching_data_name}}</em> Columns :</label>
+                          <md-select ng-model="compound_info.column" multiple="">
+                            <md-option ng-repeat="column_option in compound_info.column_options[0].length ===1? [compound_info.column_options]:compound_info.column_options" value="{{column_option}}">
+                              {{column_option}}
+                            </md-option>
+                          </md-select>
+                      </md-input-container>
                       </div>
                     </div>
-
+                    <div layout="column">
+                      <div ng-repeat = "sample_info in structure.parameters.sample_infos">
+                        <md-input-container class="md-block" flex>
+                          <label>Attaching <em>{{sample_info.attaching_data_name}}</em> Columns :</label>
+                          <md-select ng-model="sample_info.column" multiple="">
+                            <md-option ng-repeat="column_option in sample_info.column_options[0].length ===1? [sample_info.column_options]:sample_info.column_options" value="{{column_option}}">
+                              {{column_option}}
+                            </md-option>
+                          </md-select>
+                      </md-input-container>
+                      </div>
+                    </div>
                   </div>
+                  
+                  <div ng-show="structure.analysis_type == 'subset'">
+                  <p>Please specify how you would like to subset the dataset <em>{{structure.target_data_text}}</em>?</p>
+                  <div layout="column" ng-repeat = "compound_criterion in structure.parameters.compound_criterions">
+                  
+                  
+                  <div layout="row">
+                    <md-input-container class="md-block" flex>
+                        <label>column</label>
+                        <md-select ng-model="compound_criterion.column">
+                          <!--<md-option ng-repeat="column_option in compound_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>!!!!!-->
+                          <md-option value="p_values">p_values</md-option>
+                          <md-option value="p_values_adjusted">p_values_adjusted</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex>
+                        <label>type</label>
+                        <md-select ng-model="compound_criterion.type">
+                          <md-option value='numeric'>numeric</md-option>
+                          <md-option value='character'>character</md-option>
+                        </md-select>
+                    </md-input-container>
+                  </div>
+                  <div layout='row'>
+                    <md-input-container flex ng-if="compound_criterion.type=='character'">
+                        <label>levels</label>
+                        <md-select ng-model="compound_criterion.criterion" multiple = "">
+                          <md-option ng-repeat="level_option in compound_column_level_options[compound_criterion.column]" value="{{level_option}}">
+                            {{level_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex ng-if="compound_criterion.type=='numeric'">
+                        <label>minimum</label>
+                        <input ng-model="compound_criterion.criterion[0]" type="number">
+                    </md-input-container>
+                    <md-input-container class="md-block" flex ng-if="compound_criterion.type=='numeric'">
+                        <label>maximum</label>
+                        <input ng-model="compound_criterion.criterion[1]" type="number">
+                    </md-input-container>
+                  </div>
+                  </div>
+                  </div>
+                  
+                  
+                  <div ng-show="structure.analysis_type == 'chemrich'">
+                  <p>Please specify the Compound Informations for ChemRICH.</p> 
+                  <div layout='column'>
+                    <md-input-container class="md-block" flex>
+                        <label>Compound Labels</label>
+                        <md-select ng-model="structure.parameters.compound_label">
+                          <md-option ng-repeat="column_option in chemrich_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+            
+                    <md-input-container class="md-block" flex>
+                        <label>PubChem ID</label>
+                        <md-select ng-model="structure.parameters.pubchemid">
+                          <md-option ng-repeat="column_option in chemrich_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+            
+                    <md-input-container class="md-block" flex>
+                        <label>SMILES CODE</label>
+                        <md-select ng-model="structure.parameters.smiles">
+                          <md-option ng-repeat="column_option in chemrich_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+            
+                    <md-input-container class="md-block" flex>
+                        <label>InchiKey</label>
+                        <md-select ng-model="structure.parameters.inchikey">
+                          <md-option ng-repeat="column_option in chemrich_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+            
+                    <md-input-container class="md-block" flex>
+                        <label>p values</label>
+                        <md-select ng-model="structure.parameters.pvalue">
+                          <md-option ng-repeat="column_option in chemrich_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+            
+                    <md-input-container class="md-block" flex>
+                        <label>fold change</label>
+                        <md-select ng-model="structure.parameters.foldchange">
+                          <md-option ng-repeat="column_option in chemrich_column_options" value="{{column_option}}">
+                            {{column_option}}
+                          </md-option>
+                        </md-select>
+                    </md-input-container>
+            
+                    <md-input-container class="md-block" flex>
+                        <label>fold change Critical Value</label>
+                         <input required="" type="number" name="fold_change_critical" ng-model="structure.parameters.fold_change_critical">
+                    </md-input-container>
+            
+                </div>
+                              
+                  </div>
+                  
+                  <div ng-show="structure.analysis_type == 'heatmap'">
+                  <p>Please specify the scaling method and plot parameters for heatmap.</p>
+                  <div layout="column">
+                      <div layout='row'>
+                         <md-input-container class="md-block" flex>
+                          <label>Data Scaling</label>
+                          <md-select ng-model="structure.parameters.scale">
+                            <md-option ng-repeat = "scale_option in scale_options" value="{{scale_option.id}}">{{scale_option.text}}</md-option>
+                          </md-select>
+                        </md-input-container>
+                      </div>
+                      
+                      <div layout='row'>
+          <label for="colorscale">Color Scale  </label>
+          <select id="colorscale" name="colorscale" ng-model='structure.parameters.colorscale'>
+          	<option value="{{option}}" ng-repeat="option in structure.color_scale_options">{{option}}</option>
+          </select>
+        </div>
+        <div layout='row'>
+          <div flex>
+            <label for="height">Height</label>
+            <input type="number" id="height" ng-model="structure.parameters.height">
+          </div>
+          <span flex='10'></span>
+          <div flex>
+            <label for="width">Width</label>
+            <input type="number" id="width" ng-model="structure.parameters.width">
+          </div>
+        </div>
+        <div layout='row'>
+          <div flex>
+            <label for="top">top</label>
+            <input type="number" id="top" ng-model="structure.parameters.top">
+          </div>
+          <div flex>
+            <label for="right">right</label>
+            <input type="number" id="right" ng-model="structure.parameters.right">
+          </div>
+          <div flex>
+            <label for="bottom">bottom</label>
+            <input type="number" id="bottom" ng-model="structure.parameters.bottom">
+          </div>
+          <div flex>
+            <label for="left">left</label>
+            <input type="number" id="left" ng-model="structure.parameters.left">
+          </div>
+        </div>
+        <div layout='row'>
+          <div flex><label for="show_sample_label">Show Sample Label</label>
+            <input type="checkbox" id="show_sample_label" ng-model="structure.parameters.show_sample_label">
+          </div>
+          <span flex="10"></span>
+          <div flex><label for="show_compound_label">Show Compound Label</label>
+            <input type="checkbox" id="show_compound_label" ng-model="structure.parameters.show_compound_label">
+          </div>
+        </div>
 
 
+        <div layout="column">
+          <md-input-container class="md-block">
+            <label>Sample Order</label>
+            <md-select ng-model="structure.parameters.order_sample_by" multiple="">
+              <md-option ng-repeat = "order_sample_by_option in structure.order_sample_by_options track by $index" value="{{order_sample_by_option}}">{{order_sample_by_option}}</md-option>
+            </md-select>
+          </md-input-container>
+          <span style='color:blue;font-size:4px' ng-show='(structure.parameters.order_sample_by.includes("dendrogram") || structure.parameters.order_sample_by.includes("as is")) && structure.parameters.order_sample_by.length>1'><em>the <code>as is</code> overwrites the <code>dendrogram</code>, which overwites others.</em></span>
+          <md-input-container ng-hide='(structure.parameters.order_sample_by.includes("dendrogram") || structure.parameters.order_sample_by.includes("as is"))' class="md-block" ng-repeat="(key, value)  in structure.parameters.order_sample_levels" style="margin-bottom:0">
+            <label>{{$index+1}}: {{key}}</label>
+            <input ng-model="structure.parameters.order_sample_levels[key]">
+          </md-input-container>
 
-
-
-
-
-
+          <md-input-container class="md-block">
+            <label>Compound Order</label>
+            <md-select ng-model="structure.parameters.order_compound_by" multiple="">
+              <md-option ng-repeat = "order_compound_by_options in structure.order_compound_by_options track by $index" value="{{order_compound_by_options}}">{{order_compound_by_options}}</md-option>
+            </md-select>
+          </md-input-container>
+          <span style='color:blue;font-size:4px' ng-show='(structure.parameters.order_compound_by.includes("dendrogram") || structure.parameters.order_compound_by.includes("as is")) && structure.parameters.order_compound_by.length>1'><em>the <code>as is</code> overwrites the <code>dendrogram</code>, which overwites others.</em></span>
+          <md-input-container ng-hide='(structure.parameters.order_compound_by.includes("dendrogram") || structure.parameters.order_compound_by.includes("as is"))' class="md-block" ng-repeat="(key, value)  in structure.parameters.order_compound_levels" style="margin-bottom:0">
+            <label>{{$index+1}}: {{key}}</label>
+            <input ng-model="structure.parameters.order_compound_levels[key]">
+          </md-input-container>
+        </div>
+                  </div>
+                      
+                  
+                  
+                  </div>
+                  
+                  
+                  <div ng-show="structure.analysis_type == 'one_way_boxplot'">
+                  <p>Please specify how you want the boxplot look like.</p>
+                  
+                  <div layout="column">
+                    <md-input-container flex style='margin-bottom:20;'>
+                      <label>Column</label>
+                      <md-select name="groups" ng-model="structure.parameters.column" required="" ng-change = "structure.change_levels(structure.parameters.column)">
+                        <md-option ng-repeat="column_option in sample_column_options" value="{{column_option}}">{{column_option}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                    <p style='margin:6;font-size:1;color:white'>.</p>
+                    <md-input-container flex style='margin-bottom:20;'>
+                      <label>Levels Sequence</label>
+                      <input ng-model="structure.parameters.levels" type="text">
+                    </md-input-container>
+                    <p style='margin:6;font-size:1'><em>split by '||'</em></p>
+                    
+                    <md-input-container flex style='margin-bottom:20;'>
+                      <label>Selected Style</label>
+                      <md-select ng-model="structure.parameters.style" placeholder="Select a Style">
+                        <md-option ng-value="style_option" ng-repeat="style_option in structure.style_options">{{style_option}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                    <p style='margin:6;font-size:1;color:white'>.</p>
+          
+          
+                    <md-input-container flex style='margin-bottom:20;'>
+                      <label>Graph Format</label>
+                      <md-select ng-model="structure.parameters.format" placeholder="Select a Format">
+                        <md-option ng-value="format_option" ng-repeat="format_option in structure.format_options">{{format_option}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                    <p style='margin:6;font-size:1;color:white'>.</p>
+                  
+                  
+                  
+                  
+                  
+                  
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                  </div>
+                  
 
                 </md-tab>
               </md-tabs>
@@ -1199,7 +1843,8 @@ in the LICENSE file at http://material.angularjs.org/HEAD/license.
               <md-button class="md-raised md-primary" ng-click="go_to_previous_tab(selectedIndex)" ng-disabled="selectedIndex===0">Previous</md-button>
               <md-button class="md-raised md-primary" ng-click="go_to_next_tab(selectedIndex)"><span ng-show="selectedIndex!==(new_tree_structure.length-1)">Next</span><span ng-show="selectedIndex===(new_tree_structure.length-1)">Back to Beginning</span></md-button>
               <span flex></span>
-              <md-button class="md-raised md-primary" ng-click="confirm_pipeline()" ng-disabled="selectedIndex!==(new_tree_structure.length-1)">Confirm & Start Analysis</md-button>
+              <md-button ng-click="remove_analysis(selectedIndex)" ng-show="selectedIndex!==(new_tree_structure.length-1) && selectedIndex !== 0">Skip</md-button>
+              <md-button class="md-raised md-primary" ng-click="confirm_pipeline()" ng-hide="selectedIndex!==(new_tree_structure.length-1)">Confirm & Start Analysis</md-button>
               </div>
 
 

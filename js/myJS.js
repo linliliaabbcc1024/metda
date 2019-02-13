@@ -1,4 +1,8 @@
 console.log("2.8.2019-2")
+
+log_transformation_methods = ['log10',"log2"]
+fold_change_methods = ['median','mean']
+
 sequence = function(from = 0, to = 10){
   var N = to-from;
   var seq = Array.apply(null, {length: N}).map(Function.call, Number);
@@ -68,6 +72,7 @@ make_data_ready = function(ooo,id="preview_datatable"){
                  ctrl.parameters.f = ooo.f
                  ctrl.parameters.p = ooo.p
                  ctrl.parameters.project_id = ooo.project_id
+                 ctrl.parameters.source = ooo.path
 }
 
 
