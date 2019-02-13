@@ -1673,7 +1673,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                       var removeable = true; // except root.
                       var downloadable = true; // everything is downloadable.
                       var editable = true; // only able to edit dataset.
-                      var one_stoppable = true; // only available when it is a efp dataset.
+                      var one_stoppable = false; // only available when it is a efp dataset.
                       if($node.parent == '#'){
                         renameable = false;
                         removeable = false;
