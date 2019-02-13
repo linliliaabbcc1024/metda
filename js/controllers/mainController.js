@@ -1879,6 +1879,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                             objj = obj
                             // when user select one_stop, pop a modal similar with the project list asking which analysis pipeline user is going to choose.
                             function one_stop_controller($scope, $mdDialog, $mdColorPalette){
+                              $scope.confirming = false
                               //https://127.0.0.1:5985/project/auto2_1547243264820/Null_statistics_input_1547243278164.csv
                               var req = ocpu.call("upload_dataset",{
                                 path:"https://metda.fiehnlab.ucdavis.edu/db/project/"+mainctrl.activated_project_id+"/"+nnn.original.attachment_id.replace('+',"%2B")
@@ -2296,6 +2297,7 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                           $scope.selectedIndex = $scope.selectedIndex-1
                                         }
                                         $scope.confirm_pipeline = function(){
+                                          $scope.confirming = true
                                           // go to R and perform these statistical analysis.!!!!!!
                                           // now call function to get the project.
                                          var db_user = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
@@ -2320,8 +2322,16 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                                 var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
                                                 db_project.get(uuu.activated_project, {attachments: false}).then(function(project_doc){
                                                   ppp = project_doc
-                                                  update_jstree(project_doc)
-                                                  $mdDialog.hide();
+                                                  setTimeout(function(){ 
+                                                    
+                                                    update_jstree(project_doc)
+                                                    $scope.confirming = false
+                                                    $mdDialog.hide();
+                                                    
+                                                    
+                                                    
+                                                  }, 25000);
+                                                  
                                                 })
                                               })
                                               
