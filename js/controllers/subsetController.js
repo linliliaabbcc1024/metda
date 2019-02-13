@@ -262,7 +262,8 @@ ctrl.parameters.fun_name = "subset_fun"
           "icon":"fa fa-file-excel-o",
           "attachment_id":"subset_dataset_"+time_stamp+".csv",
           "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.data_matrix)))),
-          "content_type":"application/vnd.ms-excel"
+          "content_type":"application/vnd.ms-excel",
+          "efp":true
         }]
 
         mainctrl.save_result_modal(to_be_saved)

@@ -2298,8 +2298,35 @@ localStorage.setItem('parameters', JSON.stringify(parameters));
                                         $scope.confirm_pipeline = function(){
                                           // go to R and perform these statistical analysis.!!!!!!
                                           // now call function to get the project.
-                                          
-                                          
+                                         var db_user = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/user');
+                                            db_user.get(mainctrl.user).then(function(user_doc){
+                                              uuu = user_doc
+                                              
+                                              uuu.projects.splice(unpack(uuu.projects,"id").indexOf(mainctrl.activated_project_id),1)
+                                             console.log(uuu.projects)
+                                             
+                                              uuu.projects.push({
+                                                id:"MX436236_1550072080139",
+                                                name:"MX436236"
+                                              })
+                                              console.log(uuu.projects)
+                                              
+                                              uuu.activated_project = "MX436236_1550072080139"
+                                              
+                                              
+                                              
+                                              db_user.put(uuu).then(function(){
+                                                console.log(uuu.projects)
+                                                var db_project = new PouchDB('https://tempusername:temppassword@metda.fiehnlab.ucdavis.edu/db/project');
+                                                db_project.get(uuu.activated_project, {attachments: false}).then(function(project_doc){
+                                                  ppp = project_doc
+                                                  update_jstree(project_doc)
+                                                  $mdDialog.hide();
+                                                })
+                                              })
+                                              
+                                            })
+                                                        
                                           
                                         }
 
