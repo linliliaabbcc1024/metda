@@ -178,7 +178,7 @@ ctrl.parameters.fun_name = "two_way_anova_fun"
     "text":"Two-way ANOVA result.csv",
     "icon":"fa fa-file-excel-o",
     "attachment_id":"two_way_anova_dataset_"+time_stamp+".csv",
-    "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.data_matrix)))),
+    "saving_content":btoa(unescape(encodeURIComponent(Papa.unparse(oo.result)))),
     "content_type":"application/vnd.ms-excel"
     }]
 
