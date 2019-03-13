@@ -426,7 +426,7 @@ ctrl.parameters.fun_name = "one_way_boxplot_fun"
                   "icon":"fa fa-folder",
                   "main":true
                 }]
-        for(var i=0;i<src.length;i++){
+        for(var i=0;i<src.length+1;i++){
           var image = new Image();
           image.onload = (function(nr){
             return function() {
