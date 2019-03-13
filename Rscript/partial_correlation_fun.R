@@ -1,6 +1,10 @@
+.libPaths("/usr/lib/opencpu/library/")
 
+# stop(paste0(strsplit(find.package("data.table"),"/")[[1]][1:(length(strsplit(find.package("data.table"),"/")[[1]])-1)],collapse = "/"))
 
-  pacman::p_load(data.table, Hmisc, ppcor, MASS, parallel)
+install.packages("ppcor");
+
+  pacman::p_load(data.table, Hmisc,ppcor, MASS, parallel)
 
   save(e,f,p,e2,f2,p2,project_id,confounder_column,file="local.RData")
   # load("local.RData")

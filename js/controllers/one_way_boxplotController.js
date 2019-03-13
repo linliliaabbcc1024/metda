@@ -337,7 +337,7 @@ ctrl.parameters.fun_name = "one_way_boxplot_fun"
           var image = new Image();
           image.onload = (function(nr){
             return function() {
-              if(nr===src.length-1){
+              if(nr===src.length){
                 console.log("!")
 
                 /*zip.generateAsync({type:"blob"})
@@ -430,7 +430,7 @@ ctrl.parameters.fun_name = "one_way_boxplot_fun"
           var image = new Image();
           image.onload = (function(nr){
             return function() {
-              if(nr===src.length-1){
+              if(nr===src.length){
                 console.log("!")
                 //mainctrl.save_result_modal(to_be_saved)
 
