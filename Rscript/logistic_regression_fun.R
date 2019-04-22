@@ -1,8 +1,8 @@
 
 pacman::p_load(data.table, ropls)
-# fwrite(data.table(p),"p.csv")
-# fwrite(data.table(f),"f.csv")
-# fwrite(data.table(e),"e.csv")
+fwrite(data.table(p),"p.csv")
+fwrite(data.table(f),"f.csv")
+fwrite(data.table(e),"e.csv")
 # return(p)
 
 # dataset_input = fread("dataset_input.csv")
@@ -15,6 +15,20 @@ pacman::p_load(data.table, ropls)
 # result = TRUE
 
 # load("local.RData")
+
+# project_id = "test_1555960988902"
+
+
+
+# data = wcmc::read_data("C:\\Users\\Sili\\Documents\\Github\\Bajaj_2_5_2019\\Bajaj Urine\\ID Exchanger\\Log Transformation\\Log Transformation.csv")
+# 
+# # e = data$e_matrix
+# f = data$f
+# p = data$p
+
+
+
+
 
 e = data.matrix(fread(URLencode(paste0("http://metda.fiehnlab.ucdavis.edu/db/project/",project_id,"/temp_e.csv"))))
 e = t(apply(e,1,function(x){
@@ -40,7 +54,7 @@ e_scale = scale(e_t, center = !scale=='none', scale = sds)
 y = as.numeric(factor(p[[column]]))-1
 
 
-
+# confounder[confounder %in% "Alcohol Etiology_covar.1"] = "Alcohol Etiology_covar_1"
 
 if("NO_CONFOUNDER" %in% confounder){
   dta = data.table(y=y,x = 1:length(y))
