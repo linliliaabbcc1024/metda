@@ -1,8 +1,8 @@
 
 pacman::p_load(data.table, ropls)
-fwrite(data.table(p),"p.csv")
-fwrite(data.table(f),"f.csv")
-fwrite(data.table(e),"e.csv")
+# fwrite(data.table(p),"p.csv")
+# fwrite(data.table(f),"f.csv")
+# fwrite(data.table(e),"e.csv")
 # return(p)
 
 # dataset_input = fread("dataset_input.csv")
@@ -49,9 +49,12 @@ if(scale=='none'){
 e_t = t(e)
 e_scale = scale(e_t, center = !scale=='none', scale = sds)
 
+p[[column]][p[[column]]==''] = NA
 
 
 y = as.numeric(factor(p[[column]]))-1
+
+
 
 
 # confounder[confounder %in% "Alcohol Etiology_covar.1"] = "Alcohol Etiology_covar_1"
@@ -75,7 +78,7 @@ if("NO_CONFOUNDER" %in% confounder){
 
 result_matrix = t(apply(e_scale,2,function(x){
   dta$x=x
-  lm = glm(y ~ .,data = dta[dta$y<=1 & dta$y>=0,], family = "binomial")
+  lm = glm(y ~ .,data = dta, family = "binomial")
   smr = summary(lm)
   beta = smr$coefficients[2,1]
   pval = smr$coefficients[2,4]
